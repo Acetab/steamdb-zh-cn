@@ -1,0 +1,18 @@
+{
+  "path": "/app/",
+  "terms": {
+    "Details": "详情",
+    "Update History": "更新历史",
+    "Languages": "语言",
+    "Similar": "相似",
+    "More Like This": "更多类似",
+    "System Requirements": "系统需求",
+    "Recommended": "推荐配置",
+    "Minimum": "最低配置",
+    "Single-player": "单人",
+    "Multi-player": "多人",
+    "Co-op": "合作",
+    "Steam Cloud": "Steam 云",
+    "Controller Support": "控制器支持"
+  }
+}

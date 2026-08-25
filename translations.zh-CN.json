@@ -2,7 +2,7 @@
   "meta": {
     "version": "1.0.0",
     "updatedAt": "2026-08-25",
-    "note": "独立词库：Steam 官方简体中文术语优先；已并入用户原创词条与原创翻译。"
+    "note": "独立词库：Steam 官方简体中文术语优先；源文件按页面拆分维护于 dictionary/。"
   },
   "global": {
     "Store": "商店",
@@ -1688,20 +1688,6 @@
       }
     },
     {
-      "path": "/watching/",
-      "terms": {
-        "Collection": "收藏夹",
-        "Delete": "删除",
-        "Filter on sales page": "在特卖页面筛选",
-        "Import now": "立即导入",
-        "Import Steam wishlist": "导入 Steam 愿望单",
-        "Public Update": "公开更新",
-        "Save": "保存",
-        "View all your games sorted by last update here": "在此查看按最后更新时间排序的全部游戏",
-        "Watchlist": "关注列表"
-      }
-    },
-    {
       "path": "/calendar/",
       "terms": {
         "Steam Release Calendar": "Steam 发行日历",
@@ -1728,6 +1714,20 @@
         "Close (Esc)": "关闭（Esc）",
         "Fair use disclaimer": "合理使用声明",
         "Privacy": "隐私"
+      }
+    },
+    {
+      "path": "/watching/",
+      "terms": {
+        "Collection": "收藏夹",
+        "Delete": "删除",
+        "Filter on sales page": "在特卖页面筛选",
+        "Import now": "立即导入",
+        "Import Steam wishlist": "导入 Steam 愿望单",
+        "Public Update": "公开更新",
+        "Save": "保存",
+        "View all your games sorted by last update here": "在此查看按最后更新时间排序的全部游戏",
+        "Watchlist": "关注列表"
       }
     },
     {

@@ -1,0 +1,154 @@
+[
+  {
+    "source": "^Starts (.+)$",
+    "target": "$1 开始"
+  },
+  {
+    "source": "^Ends (.+)$",
+    "target": "$1 结束"
+  },
+  {
+    "source": "^Page (\\d+) of (\\d+)$",
+    "target": "第 $1 页，共 $2 页"
+  },
+  {
+    "source": "^([\\d,.]+(?:[kKM])?) apps in database$",
+    "target": "数据库收录 $1 个应用"
+  },
+  {
+    "source": "^([\\d,.]+(?:[kKM])?) packages in database$",
+    "target": "数据库收录 $1 个 SUB"
+  },
+  {
+    "source": "^([\\d,.]+(?:[kKM])?) bundles in database$",
+    "target": "数据库收录 $1 个捆绑包"
+  },
+  {
+    "source": "^([\\d,.]+(?:[kKM])?) releases this year$",
+    "target": "今年已发行 $1 款"
+  },
+  {
+    "source": "^Packages (\\d+)$",
+    "target": "SUB $1"
+  },
+  {
+    "source": "^DLCs (\\d+)$",
+    "target": "DLC $1"
+  },
+  {
+    "source": "^Depots (\\d+)$",
+    "target": "Depot $1"
+  },
+  {
+    "source": "^([\\d,.]+(?:[kKM])?) reviews$",
+    "target": "$1 篇评测"
+  },
+  {
+    "source": "^(\\d+) Languages$",
+    "target": "$1 种语言"
+  },
+  {
+    "source": "^View more (.+) entries…$",
+    "target": "查看更多$1记录…"
+  },
+  {
+    "source": "^([\\d,]+) products match your filters$",
+    "target": "$1 个产品符合筛选条件"
+  },
+  {
+    "source": "^(.+) starts on (.+)$",
+    "target": "$1 将于 $2 开始"
+  },
+  {
+    "source": "^Releases in (.+) without a specific day$",
+    "target": "$1 未指定具体日期的发行内容"
+  },
+  {
+    "source": "^View all (.+) releases$",
+    "target": "查看 $1 的全部发行内容"
+  },
+  {
+    "source": "^Jan '(\\d{2})$",
+    "target": "20$1 年 1 月"
+  },
+  {
+    "source": "^Feb '(\\d{2})$",
+    "target": "20$1 年 2 月"
+  },
+  {
+    "source": "^Mar '(\\d{2})$",
+    "target": "20$1 年 3 月"
+  },
+  {
+    "source": "^Apr '(\\d{2})$",
+    "target": "20$1 年 4 月"
+  },
+  {
+    "source": "^May '(\\d{2})$",
+    "target": "20$1 年 5 月"
+  },
+  {
+    "source": "^Jun '(\\d{2})$",
+    "target": "20$1 年 6 月"
+  },
+  {
+    "source": "^Jul '(\\d{2})$",
+    "target": "20$1 年 7 月"
+  },
+  {
+    "source": "^Aug '(\\d{2})$",
+    "target": "20$1 年 8 月"
+  },
+  {
+    "source": "^Sep '(\\d{2})$",
+    "target": "20$1 年 9 月"
+  },
+  {
+    "source": "^Oct '(\\d{2})$",
+    "target": "20$1 年 10 月"
+  },
+  {
+    "source": "^Nov '(\\d{2})$",
+    "target": "20$1 年 11 月"
+  },
+  {
+    "source": "^Dec '(\\d{2})$",
+    "target": "20$1 年 12 月"
+  },
+  {
+    "source": "^You have ([\\d,]+) items? on your watched list\\.$",
+    "target": "你的关注列表中有 $1 个项目。"
+  },
+  {
+    "source": "^Your games were last synced (\\d+) minutes? ago\\.$",
+    "target": "你的游戏数据最后同步于 $1 分钟前。"
+  },
+  {
+    "source": "^Your games were last synced (\\d+) hours? ago\\.$",
+    "target": "你的游戏数据最后同步于 $1 小时前。"
+  },
+  {
+    "source": "^Your games were last synced (\\d+) days? ago\\.$",
+    "target": "你的游戏数据最后同步于 $1 天前。"
+  },
+  {
+    "source": "^(\\d+) minutes? ago$",
+    "target": "$1 分钟前"
+  },
+  {
+    "source": "^(\\d+) hours? ago$",
+    "target": "$1 小时前"
+  },
+  {
+    "source": "^(\\d+) days? ago$",
+    "target": "$1 天前"
+  },
+  {
+    "source": "^(\\d+) months? ago$",
+    "target": "$1 个月前"
+  },
+  {
+    "source": "^(\\d+) years? ago$",
+    "target": "$1 年前"
+  }
+]

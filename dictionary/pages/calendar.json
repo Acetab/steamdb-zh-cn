@@ -1,0 +1,29 @@
+{
+  "path": "/calendar/",
+  "terms": {
+    "Steam Release Calendar": "Steam 发行日历",
+    "For each calendar day the most followed game is shown.": "日历每天显示当天最受关注的游戏。",
+    "View all upcoming game releases here.": "在此查看所有即将发行的游戏。",
+    "View all recent releases here.": "在此查看所有最近发行的游戏。",
+    "Rolling": "滚动月份",
+    "Week": "周",
+    "View all upcoming game releases": "查看所有即将发行的游戏",
+    "View all recent releases": "查看所有最近发行的游戏",
+    "For each calendar day the most followed game with at least 500 followers on Steam is selected.": "每天会选出 Steam 上至少有 500 名关注者且最受关注的游戏。",
+    "Green indicates games with over 10000 followers.": "绿色表示关注者超过 10,000 人的游戏。",
+    "Adult games are hidden.": "成人游戏已隐藏。",
+    "Apps in": "位于",
+    "most wishlisted upcoming": "即将发行愿望单榜",
+    "top selling games": "热销游戏榜",
+    "lists are boosted.": "中的应用会提高显示优先级。",
+    "Click on the day number to view releases for that day, or the week number for that week.": "点击日期数字可查看当天发行内容，点击周数可查看该周内容。",
+    "Permanent link to the perpetually current month": "始终指向当前月份的永久链接",
+    "Automatically cycle games": "自动轮播游戏",
+    "← Prev": "← 上一个",
+    "Next →": "下一个 →",
+    "Open link": "打开链接",
+    "Close (Esc)": "关闭（Esc）",
+    "Fair use disclaimer": "合理使用声明",
+    "Privacy": "隐私"
+  }
+}
