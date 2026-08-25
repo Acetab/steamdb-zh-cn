@@ -2,8 +2,8 @@
 // 用法：npm run build
 // 产物：
 //   build/                                 可直接以“加载已解压的扩展程序”加载
-//   build/steamdb-zh-cn-standalone-<v>.zip
-//   build/steamdb-zh-cn-standalone-<v>.crx 带 RSA 签名的 CRX3（首次运行生成 keys/extension.pem）
+//   build/steamdb-zh-cn-<v>.zip
+//   build/steamdb-zh-cn-<v>.crx 带 RSA 签名的 CRX3（首次运行生成 keys/extension.pem）
 
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -169,11 +169,11 @@ execFileSync(process.execPath, ["--check", path.join(buildDir, "content.js")], {
 
 const userscriptHeader = [
   "// ==UserScript==",
-  "// @name          SteamDB 简体中文界面汉化（独立版）",
-  "// @namespace     steamdb-zh-cn-standalone.local",
+  "// @name          SteamDB 简体中文界面汉化（非官方）",
+  "// @namespace     steamdb-zh-cn.local",
   `// @version        ${pkg.version}`,
-  "// @description   SteamDB 网页简体中文界面汉化（独立实现，MIT，不依赖任何既有汉化脚本）",
-  "// @author        steamdb-zh-cn-standalone contributors",
+  "// @description   SteamDB 网页简体中文界面汉化（非官方，MIT）",
+  "// @author        steamdb-zh-cn contributors",
   "// @match         https://steamdb.info/*",
   "// @run-at        document-idle",
   "// @license       MIT",
@@ -188,7 +188,7 @@ const userscript = [
   contentJs,
 ].join("\n");
 
-const userscriptName = `steamdb-zh-cn-standalone-${pkg.version}.user.js`;
+const userscriptName = `steamdb-zh-cn-${pkg.version}.user.js`;
 await writeFile(path.join(buildDir, userscriptName), userscript, "utf8");
 execFileSync(process.execPath, ["--check", path.join(buildDir, userscriptName)], { stdio: "inherit" });
 
@@ -207,7 +207,7 @@ if (!existsSync(keyPath)) {
 const keyPem = await readFile(keyPath, "utf8");
 const { crxId, buffer: crxBuffer } = buildCrx3(zipBuffer, keyPem);
 
-const baseName = `steamdb-zh-cn-standalone-${pkg.version}`;
+const baseName = `steamdb-zh-cn-${pkg.version}`;
 await writeFile(path.join(buildDir, `${baseName}.zip`), zipBuffer);
 await writeFile(path.join(buildDir, `${baseName}.crx`), crxBuffer);
 

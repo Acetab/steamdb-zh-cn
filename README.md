@@ -1,4 +1,4 @@
-# SteamDB 简体中文界面汉化（独立实现）
+# SteamDB 简体中文界面汉化（非官方）
 
 在 SteamDB（steamdb.info）网页上把常见界面文本改写为简体中文的浏览器扩展。**非官方项目**，与 SteamDB 网站及其官方扩展无任何关联。
 
@@ -28,7 +28,7 @@
 
 **油猴脚本版**（Tampermonkey / Violentmonkey）：
 
-1. 构建（见下）得到 `build/steamdb-zh-cn-standalone-<版本>.user.js`。
+1. 构建（见下）得到 `build/steamdb-zh-cn-<版本>.user.js`。
 2. 在油猴管理面板「添加新脚本」，把文件内容粘贴进去保存；或直接把 `.user.js` 文件拖入油猴管理页安装。
 3. 打开 `https://steamdb.info/` 生效。词库内嵌在脚本内，完全自包含，不依赖任何 CDN 或远程资源。
 
@@ -39,7 +39,7 @@
 3. 点击「加载已解压的扩展程序」，选择本项目的 `build/` 目录。
 4. 打开 `https://steamdb.info/`，页面右下角出现「译」按钮即生效。
 
-也可把 `build/steamdb-zh-cn-standalone-<版本>.crx` 拖入 `chrome://extensions` 页面安装（开发者模式下）。
+也可把 `build/steamdb-zh-cn-<版本>.crx` 拖入 `chrome://extensions` 页面安装（开发者模式下）。
 
 ## 构建
 
@@ -51,10 +51,10 @@ npm run build
 
 | 文件 | 说明 |
 |---|---|
-| `steamdb-zh-cn-standalone-<版本>.user.js` | 油猴脚本版（词库内嵌，自包含） |
+| `steamdb-zh-cn-<版本>.user.js` | 油猴脚本版（词库内嵌，自包含） |
 | `build/` | 未打包扩展目录，推荐「加载已解压的扩展程序」 |
-| `steamdb-zh-cn-standalone-<版本>.zip` | 扩展分发用压缩包 |
-| `steamdb-zh-cn-standalone-<版本>.crx` | 带 RSA 签名的 CRX3（首次构建生成 `keys/extension.pem`，请勿提交或泄露） |
+| `steamdb-zh-cn-<版本>.zip` | 扩展分发用压缩包 |
+| `steamdb-zh-cn-<版本>.crx` | 带 RSA 签名的 CRX3（首次构建生成 `keys/extension.pem`，请勿提交或泄露） |
 
 油猴版与扩展版共用同一份引擎（`src/content.js`），词库一致；油猴版通过构建时注入的内嵌词库运行，扩展版从扩展资源读取。
 
@@ -79,7 +79,7 @@ npm run build
 
 ## 协议
 
-MIT License。本项目为独立实现：翻译引擎与词库均为本项目自研，与任何既有 SteamDB 汉化脚本无代码或词库上的衍生关系。
+MIT License。本项目为全新开发，翻译引擎与词库均为本项目原创。
 
 ## 上架扩展商店（计划）
 
