@@ -7,7 +7,7 @@
 // @match         https://steamdb.info/*
 // @run-at        document-idle
 // @grant         GM_getResourceText
-// @resource      dictTranslations https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@f993d22262602514b5b2ce3891a039999ff5f4e2/translations.zh-CN.json
+// @resource      dictTranslations https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/translations.zh-CN.json
 // @connect       cdn.jsdelivr.net
 // @license       MIT
 // ==/UserScript==
