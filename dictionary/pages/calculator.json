@@ -81,6 +81,10 @@
     "View games on Steam": "在 Steam 中查看游戏",
     "View in the points shop": "在点数商店中查看",
     "View profile on Steam": "在 Steam 中查看个人资料",
-    "view their wishlist": "查看其愿望单"
+    "view their wishlist": "查看其愿望单",
+    "library value (current game prices), not your actual spending. To see exactly how much money you've spent, use": "游戏库价值（按当前游戏价格计算），并非你的实际消费金额。要查看准确消费金额，请使用",
+    "Calculator results are cached for up to one hour, then deleted.": "计算器结果最多缓存一小时，之后删除。",
+    "We only permanently store data for profiles that appear on": "我们仅永久存储出现在排行榜上的个人资料数据",
+    "Make your profile private to automatically remove your data.": "将个人资料设为私密即可自动移除你的数据。"
   }
 }
