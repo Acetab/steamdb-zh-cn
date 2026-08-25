@@ -29,14 +29,19 @@
 
 ## 安装
 
-**从 GitHub Releases 下载**（推荐）：<https://github.com/Acetab/steamdb-zh-cn/releases>
+## 安装
 
-- 油猴版：`steamdb-zh-cn-<版本>.user.js`，Tampermonkey / Violentmonkey 直接安装
-- 扩展版：`steamdb-zh-cn-<版本>.zip`，Chrome/Edge 开发者模式加载；或拖入 `.crx`
+**油猴脚本版**（Tampermonkey / Violentmonkey）二选一：
 
-**油猴版**：安装油猴扩展 → 安装 `.user.js` → 打开 `steamdb.info`，右下角出现「译」按钮即生效。词库通过 `@resource` 由油猴在安装时下载并缓存到本地，运行期不联网。
+- **Greasy Fork 一键安装**：[SteamDB 简体中文界面汉化（非官方）](https://greasyfork.org/zh-CN/scripts/592897-steamdb-简体中文界面汉化-非官方)
+- **GitHub Releases**：[下载](https://github.com/Acetab/steamdb-zh-cn/releases) `steamdb-zh-cn-<版本>.user.js` 后拖入油猴安装
 
-**扩展版**：打开 `chrome://extensions` → 开启开发者模式 → 「加载已解压的扩展程序」选择 `build/` 目录。
+安装后打开 `steamdb.info`，右下角出现「译」按钮即生效。词库通过 `@resource` 在安装时缓存到本地，运行期不联网。
+
+**扩展版**（Chrome / Edge / Steam 客户端内置浏览器）：
+
+- 从 [GitHub Releases](https://github.com/Acetab/steamdb-zh-cn/releases) 下载 `steamdb-zh-cn-<版本>.zip` 或 `.crx`
+- 打开 `chrome://extensions` → 开启开发者模式 → 「加载已解压的扩展程序」选择解压后的目录，或直接拖入 `.crx`
 
 ## 构建
 
