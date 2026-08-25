@@ -18,6 +18,7 @@
     off: "sdbcn2_off",
     collect: "sdbcn2_collect_enabled",
     data: "sdbcn2_collected_data",
+    dictCache: "sdbcn2_dict_cache",
   };
   const MAX_TEXT = 500; // 超过该长度的文本不处理（长段内容多为介绍/描述）
   const SKIP_SELECTOR = [
@@ -63,6 +64,61 @@
     index = { global, page: page ? page.terms : null, attrs, regex };
   }
 
+  // 油猴远程词库地址（由构建脚本注入 `const REMOTE_DICT_URL = ...`；扩展版无此变量）
+  const REMOTE_DICT_URL =
+    typeof REMOTE_DICT_URL !== "undefined" ? REMOTE_DICT_URL : null;
+
+  // 油猴本地词库缓存（GM 存储，跨页面共享）
+  function loadCachedDict() {
+    if (typeof GM_getValue !== "function") return null;
+    try {
+      const raw = GM_getValue(STORAGE.dictCache, "");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveCachedDict(raw) {
+    if (typeof GM_setValue !== "function") return;
+    try {
+      GM_setValue(STORAGE.dictCache, JSON.stringify(raw));
+    } catch (err) {
+      console.warn("[SteamDB CN] 词库缓存写入失败。", err);
+    }
+  }
+
+  // 油猴：异步拉取最新词库，成功后应用并重译当前页（失败静默回退本地词库）
+  function refreshRemoteDict() {
+    if (!REMOTE_DICT_URL || typeof GM_xmlhttpRequest !== "function") return;
+    GM_xmlhttpRequest({
+      method: "GET",
+      url: REMOTE_DICT_URL,
+      timeout: 10000,
+      onload(res) {
+        if (res.status < 200 || res.status >= 300) {
+          console.warn(`[SteamDB CN] 词库远程更新失败 HTTP ${res.status}，继续使用本地词库。`);
+          return;
+        }
+        try {
+          const raw = JSON.parse(res.responseText);
+          applyDictionary(raw);
+          saveCachedDict(raw);
+          console.info("[SteamDB CN] 词库已远程更新，重新翻译页面。");
+          scan(document.body || document.documentElement);
+        } catch (err) {
+          console.warn("[SteamDB CN] 远程词库解析失败，继续使用本地词库。", err);
+        }
+      },
+      onerror() {
+        console.warn("[SteamDB CN] 词库远程更新失败，继续使用本地词库。");
+      },
+      ontimeout() {
+        console.warn("[SteamDB CN] 词库远程更新超时，继续使用本地词库。");
+      },
+    });
+  }
+
   function loadDictionary() {
     // 1) 内嵌词库：扩展版构建时注入
     const embedded = typeof EMBEDDED_DICTIONARY !== "undefined" ? EMBEDDED_DICTIONARY : null;
@@ -70,7 +126,24 @@
       applyDictionary(embedded);
       return Promise.resolve();
     }
-    // 2) 油猴 @resource：避免脚本内嵌大块数据触发 Greasy Fork 的压缩代码规则
+    // 2) 油猴：本地词库立即生效（GM 缓存 → @resource），随后异步拉取最新
+    if (typeof GM_xmlhttpRequest === "function") {
+      const cached = loadCachedDict();
+      if (cached) {
+        applyDictionary(cached);
+      } else if (typeof GM_getResourceText === "function") {
+        try {
+          const text = GM_getResourceText("dictTranslations");
+          if (text) applyDictionary(JSON.parse(text));
+        } catch (err) {
+          console.warn("[SteamDB CN] @resource 词库解析失败。", err);
+        }
+      }
+      if (!index) applyDictionary({});
+      refreshRemoteDict();
+      return Promise.resolve();
+    }
+    // 3) 无 GM_xmlhttpRequest 的油猴环境：@resource
     if (typeof GM_getResourceText === "function") {
       try {
         const text = GM_getResourceText("dictTranslations");
@@ -82,7 +155,7 @@
         console.warn("[SteamDB CN] @resource 词库解析失败。", err);
       }
     }
-    // 3) 远程 fetch 兜底
+    // 4) 远程 fetch 兜底
     return fetch(resourceUrl("translations.zh-CN.json"))
       .then((res) => {
         if (!res.ok) throw new Error("HTTP " + res.status);

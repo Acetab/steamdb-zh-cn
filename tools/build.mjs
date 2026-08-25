@@ -195,14 +195,20 @@ const userscriptHeader = [
   "// @grant         GM_getResourceText",
   `// @resource      dictTranslations ${dictResourceUrl}`,
   "// @connect       cdn.jsdelivr.net",
+  "// @grant         GM_xmlhttpRequest",
+  "// @grant         GM_getValue",
+  "// @grant         GM_setValue",
   "// @license       MIT",
   "// ==/UserScript==",
   "",
 ].join("\n");
 
-// 油猴版不再内嵌词库字面量：脚本本体保持小而清晰，词库通过 @resource 由油猴加载并通过 GM_getResourceText 读取。
+// 油猴版词库：@resource 安装时缓存 + 启动时异步拉取最新（REMOTE_DICT_URL 由构建注入）
+const remoteDictInject = `const REMOTE_DICT_URL = ${JSON.stringify(dictResourceUrl)};`;
 const userscript = [
   userscriptHeader,
+  remoteDictInject,
+  "",
   contentJs,
 ].join("\n");
 
