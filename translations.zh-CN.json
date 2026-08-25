@@ -1330,7 +1330,52 @@
     "In short, no. We believe if you need to get Steam data, you can get it from Steam directly using their WebAPI or using libraries like SteamKit (see above).": "简而言之，不行。我们相信如果你需要 Steam 数据，可以直接使用 Steam 的 WebAPI 或 SteamKit 等库获取（见上文）。",
     "This page will calculate the approximate value of your Steam account by looking up your games on your Steam community profile, using the current prices for each game on the Steam store.": "此页面将根据你的 Steam 社区个人资料中的游戏，使用 Steam 商店中每款游戏的当前价格，计算你 Steam 账户的近似价值。",
     "SteamDB is a community website and we do not make money, and maintaining the site is already enough work for us. Creating a good API is a lot of work and a big vector for abuse which we are not equipped to deal with.": "SteamDB 是一个社区网站，我们不赚钱，维护网站已经够辛苦了。制作一个好的 API 需要大量工作，而且是一个很大的滥用入口，我们不具备处理能力。",
-    "Users claiming to be a Valve employee or Steam moderator, accounts asking to verify your items, and users who send you a message which insist you need to trade your items to them for investigation or security reasons should immediately be reported for trade scams.": "声称是 Valve 员工或 Steam 版主的用户、要求验证你物品的账户，以及坚持要你为调查或安全原因将物品交易给他们的用户，应立即举报为交易诈骗。"
+    "Users claiming to be a Valve employee or Steam moderator, accounts asking to verify your items, and users who send you a message which insist you need to trade your items to them for investigation or security reasons should immediately be reported for trade scams.": "声称是 Valve 员工或 Steam 版主的用户、要求验证你物品的账户，以及坚持要你为调查或安全原因将物品交易给他们的用户，应立即举报为交易诈骗。",
+    "Account": "账户",
+    "ACCOUNT": "账户",
+    "Ends": "结束",
+    "Ends: Activate to sort": "结束：点击排序",
+    "Started: Activate to sort": "开始：点击排序",
+    "#: Activate to remove sorting": "#：点击取消排序",
+    "pagination": "分页",
+    "entries per page": "每页条目",
+    "Open link": "打开链接",
+    "Support us": "支持我们",
+    "FAQ & help": "常见问题与帮助",
+    "Steam Status": "Steam 状态",
+    "Steam Group": "Steam 群组",
+    "SteamDB Blog": "SteamDB 博客",
+    "SteamDB Rating": "SteamDB 评分",
+    "Blog": "博客",
+    "Calculator": "计算器",
+    "Calendar": "日历",
+    "Developers": "开发者",
+    "Publishers": "发行商",
+    "Discord Bot": "Discord 机器人",
+    "Change history": "变更历史",
+    "Your Games": "我的游戏",
+    "Your Profile": "我的个人资料",
+    "Your Wishlist": "我的愿望单",
+    "Hide owned": "隐藏已拥有",
+    "Show only owned": "仅显示已拥有",
+    "Hide in family": "隐藏家庭共享",
+    "Show only in family": "仅显示家庭共享",
+    "Deal Rank": "优惠排名",
+    "Discount percentage": "折扣百分比",
+    "Apply new filters": "应用新筛选",
+    "tomorrow": "明天",
+    "Fair use disclaimer": "合理使用声明",
+    "Blue discount — Product has not been this cheap before": "蓝色折扣 — 价格从未如此之低",
+    "Green discount — Product is priced on par with lowest recorded price": "绿色折扣 — 价格与历史最低价持平",
+    "Purple discount — Product is priced on par with lowest recorded price in last two years": "紫色折扣 — 价格与近两年最低价持平",
+    "Lighter blue highlight: Previous low was 1.5+ years ago OR 50%+ price drop": "浅蓝高亮：上次最低价在 1.5 年前，或降价超 50%",
+    "When this discount will expire": "该折扣何时到期",
+    "When was this product discounted": "该产品何时有过折扣",
+    "By default multiple inclusion filters use AND logic. Check this to use OR logic instead.": "默认多个包含筛选采用与逻辑，勾选后改用或逻辑。",
+    "Requires our browser extension to enable all filters (including showing all your DLC)": "需安装浏览器扩展才能启用全部筛选（含显示你的全部 DLC）",
+    "Only numbers (with or without fractions)": "仅数字（可含小数）",
+    "Use keywords to find matches. \"Quotes\" for exact phrases. Exclude terms with ! symbol, e.g. \"!demo\"": "用关键词查找匹配。\"引号\"为精确短语，! 排除词条，如 \"!demo\"",
+    "Steam data for everyone since 2012 Support us by donating or becoming a sponsor": "自 2012 年为所有人提供 Steam 数据，欢迎捐赠或成为赞助者支持我们"
   },
   "pages": [
     {
@@ -2263,6 +2308,86 @@
     {
       "source": "^(\\d+) years? ago$",
       "target": "$1 年前"
+    },
+    {
+      "source": "^in (\\d+) hours?$",
+      "target": "$1 小时后"
+    },
+    {
+      "source": "^in (\\d+) days?$",
+      "target": "$1 天后"
+    },
+    {
+      "source": "^in (\\d+) weeks?$",
+      "target": "$1 周后"
+    },
+    {
+      "source": "^in (\\d+) minutes?$",
+      "target": "$1 分钟后"
+    },
+    {
+      "source": "^Remove '(.*)' filter$",
+      "target": "移除'$1'筛选"
+    },
+    {
+      "source": "^Rating: ≥(\\d+)%$",
+      "target": "评级：≥$1%"
+    },
+    {
+      "source": "^Last (\\d+) months?$",
+      "target": "最近 $1 个月"
+    },
+    {
+      "source": "^Last (\\d+) days?$",
+      "target": "最近 $1 天"
+    },
+    {
+      "source": "^Jan (\\d{4})$",
+      "target": "$1 年 1 月"
+    },
+    {
+      "source": "^Feb (\\d{4})$",
+      "target": "$1 年 2 月"
+    },
+    {
+      "source": "^Mar (\\d{4})$",
+      "target": "$1 年 3 月"
+    },
+    {
+      "source": "^Apr (\\d{4})$",
+      "target": "$1 年 4 月"
+    },
+    {
+      "source": "^May (\\d{4})$",
+      "target": "$1 年 5 月"
+    },
+    {
+      "source": "^Jun (\\d{4})$",
+      "target": "$1 年 6 月"
+    },
+    {
+      "source": "^Jul (\\d{4})$",
+      "target": "$1 年 7 月"
+    },
+    {
+      "source": "^Aug (\\d{4})$",
+      "target": "$1 年 8 月"
+    },
+    {
+      "source": "^Sep (\\d{4})$",
+      "target": "$1 年 9 月"
+    },
+    {
+      "source": "^Oct (\\d{4})$",
+      "target": "$1 年 10 月"
+    },
+    {
+      "source": "^Nov (\\d{4})$",
+      "target": "$1 年 11 月"
+    },
+    {
+      "source": "^Dec (\\d{4})$",
+      "target": "$1 年 12 月"
     }
   ]
 }

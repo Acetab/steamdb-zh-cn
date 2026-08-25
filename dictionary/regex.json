@@ -150,5 +150,85 @@
   {
     "source": "^(\\d+) years? ago$",
     "target": "$1 年前"
+  },
+  {
+    "source": "^in (\\d+) hours?$",
+    "target": "$1 小时后"
+  },
+  {
+    "source": "^in (\\d+) days?$",
+    "target": "$1 天后"
+  },
+  {
+    "source": "^in (\\d+) weeks?$",
+    "target": "$1 周后"
+  },
+  {
+    "source": "^in (\\d+) minutes?$",
+    "target": "$1 分钟后"
+  },
+  {
+    "source": "^Remove '(.*)' filter$",
+    "target": "移除'$1'筛选"
+  },
+  {
+    "source": "^Rating: ≥(\\d+)%$",
+    "target": "评级：≥$1%"
+  },
+  {
+    "source": "^Last (\\d+) months?$",
+    "target": "最近 $1 个月"
+  },
+  {
+    "source": "^Last (\\d+) days?$",
+    "target": "最近 $1 天"
+  },
+  {
+    "source": "^Jan (\\d{4})$",
+    "target": "$1 年 1 月"
+  },
+  {
+    "source": "^Feb (\\d{4})$",
+    "target": "$1 年 2 月"
+  },
+  {
+    "source": "^Mar (\\d{4})$",
+    "target": "$1 年 3 月"
+  },
+  {
+    "source": "^Apr (\\d{4})$",
+    "target": "$1 年 4 月"
+  },
+  {
+    "source": "^May (\\d{4})$",
+    "target": "$1 年 5 月"
+  },
+  {
+    "source": "^Jun (\\d{4})$",
+    "target": "$1 年 6 月"
+  },
+  {
+    "source": "^Jul (\\d{4})$",
+    "target": "$1 年 7 月"
+  },
+  {
+    "source": "^Aug (\\d{4})$",
+    "target": "$1 年 8 月"
+  },
+  {
+    "source": "^Sep (\\d{4})$",
+    "target": "$1 年 9 月"
+  },
+  {
+    "source": "^Oct (\\d{4})$",
+    "target": "$1 年 10 月"
+  },
+  {
+    "source": "^Nov (\\d{4})$",
+    "target": "$1 年 11 月"
+  },
+  {
+    "source": "^Dec (\\d{4})$",
+    "target": "$1 年 12 月"
   }
 ]

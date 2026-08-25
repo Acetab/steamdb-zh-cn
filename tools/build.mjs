@@ -191,10 +191,10 @@ execFileSync(process.execPath, ["--check", path.join(buildDir, "content.js")], {
 
 const userscriptHeader = [
   "// ==UserScript==",
-  "// @name          SteamDB 简体中文界面汉化（非官方）",
+  "// @name          SteamDB 中文汉化",
   "// @namespace     steamdb-zh-cn.local",
   `// @version        ${pkg.version}`,
-  "// @description   SteamDB 网页简体中文界面汉化（非官方，MIT）",
+  "// @description   SteamDB 网页简体中文汉化（非官方，MIT）",
   "// @author        steamdb-zh-cn contributors",
   "// @match         https://steamdb.info/*",
   "// @run-at        document-idle",

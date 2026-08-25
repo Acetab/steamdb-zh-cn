@@ -1,16 +1,16 @@
-# SteamDB 简体中文界面汉化（非官方）
+# SteamDB 中文汉化
 
 **GitHub**: https://github.com/Acetab/steamdb-zh-cn
 
 ## 短描述（脚本元数据 @description）
 
-SteamDB 网页界面简体中文汉化。词库通过 @resource 加载，脚本本体小而清晰，2,000+ 词条。
+SteamDB 网页简体中文汉化。词库通过 @resource 加载，脚本本体小而清晰，2,000+ 词条。
 
 ## Greasy Fork 详细描述（Additional Info，Markdown）
 
 ---
 
-# SteamDB 简体中文界面汉化（非官方）
+# SteamDB 中文汉化
 
 将 SteamDB（steamdb.info）网页界面翻译为简体中文的用户脚本。**非官方项目**，与 SteamDB 网站及其官方扩展无任何关联。
 
