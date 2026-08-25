@@ -1533,7 +1533,9 @@
     "Product is priced on par with lowest recorded price.": "价格与历史最低记录持平。",
     "Product is priced on par with lowest recorded price in last two years.": "价格与近两年最低记录持平。",
     "Game icon explanation": "游戏图标含义说明",
-    "This page contains: Browse current Steam sale deals with powerful filters. Filter by price, discount, tags, features, and more. See historical lows and track your wishlist. Filters: ≥ 50% discount, ≥ 500 reviews": "此页面包含：浏览当前 Steam 促销特卖，支持强大的筛选功能。可按价格、折扣、标签、特性等筛选，查看历史最低价并追踪愿望单。常用筛选：≥ 50% 折扣、≥ 500 条评测。"
+    "This page contains: Browse current Steam sale deals with powerful filters. Filter by price, discount, tags, features, and more. See historical lows and track your wishlist. Filters: ≥ 50% discount, ≥ 500 reviews": "此页面包含：浏览当前 Steam 促销特卖，支持强大的筛选功能。可按价格、折扣、标签、特性等筛选，查看历史最低价并追踪愿望单。常用筛选：≥ 50% 折扣、≥ 500 条评测。",
+    "Discount intervention: DB persistance is not defined": "折扣干预：数据库尚未就绪",
+    "at steamdb.pet.vet": "在 steamdb.pet.vet"
   },
   "pages": [
     {
