@@ -70,11 +70,14 @@ const REMOTE_DICT_URL = "https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/
   }
 
   function applyDictionary(raw) {
-    const global = new Map(Object.entries(raw.global || {}));
-    const attrs = new Map(Object.entries(raw.attrs || {}));
+    // key 统一存归一化形式（折叠空白 + 弯直引号统一），与页面文本比较时同空间
+    const normMap = (obj) =>
+      new Map(Object.entries(obj || {}).map(([k, v]) => [normalize(k), v]));
+    const global = normMap(raw.global);
+    const attrs = normMap(raw.attrs);
     const candidates = (raw.pages || [])
       .filter((p) => typeof p.path === "string")
-      .map((p) => ({ path: p.path, terms: new Map(Object.entries(p.terms || {})) }))
+      .map((p) => ({ path: p.path, terms: normMap(p.terms) }))
       .sort((a, b) => b.path.length - a.path.length);
     const page = candidates.find((p) => location.pathname.startsWith(p.path));
     const regex = (raw.regex || [])
@@ -190,7 +193,13 @@ const REMOTE_DICT_URL = "https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/
 
   // ================= 通用工具 =================
 
-  const normalize = (text) => text.replace(/\s+/g, " ").trim();
+  // 归一化：空白折叠 + 弯直引号统一（页面常使用弯引号 ' ' " "，词库 key 用直引号）
+  const normalize = (text) =>
+    text
+      .replace(/\s+/g, " ")
+      .replace(/[\u2018\u2019]/g, "'")
+      .replace(/[\u201c\u201d]/g, '"')
+      .trim();
   const isSkipped = (node) => {
     const el = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
     return !el || (node.nodeType === Node.TEXT_NODE && el.closest("textarea"))
