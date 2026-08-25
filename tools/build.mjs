@@ -16,6 +16,8 @@ import { auditDictionary } from "./audit.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const manifest = JSON.parse(await readFile(path.join(root, "manifest.json"), "utf8"));
+// 版本以 package.json 为准，避免 manifest.json 忘记同步
+manifest.version = pkg.version;
 const contentJs = await readFile(path.join(root, "src", "content.js"), "utf8");
 const rawDict = JSON.parse(await readFile(path.join(root, "translations.zh-CN.json"), "utf8"));
 const buildDir = path.join(root, "build");
