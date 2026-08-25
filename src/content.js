@@ -64,11 +64,25 @@
   }
 
   function loadDictionary() {
+    // 1) 内嵌词库：扩展版构建时注入
     const embedded = typeof EMBEDDED_DICTIONARY !== "undefined" ? EMBEDDED_DICTIONARY : null;
     if (embedded) {
       applyDictionary(embedded);
       return Promise.resolve();
     }
+    // 2) 油猴 @resource：避免脚本内嵌大块数据触发 Greasy Fork 的压缩代码规则
+    if (typeof GM_getResourceText === "function") {
+      try {
+        const text = GM_getResourceText("dictTranslations");
+        if (text) {
+          applyDictionary(JSON.parse(text));
+          return Promise.resolve();
+        }
+      } catch (err) {
+        console.warn("[SteamDB CN] @resource 词库解析失败。", err);
+      }
+    }
+    // 3) 远程 fetch 兜底
     return fetch(resourceUrl("translations.zh-CN.json"))
       .then((res) => {
         if (!res.ok) throw new Error("HTTP " + res.status);

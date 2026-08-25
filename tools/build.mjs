@@ -165,7 +165,7 @@ await writeFile(path.join(buildDir, "translations.zh-CN.json"), translationsText
 // 语法检查
 execFileSync(process.execPath, ["--check", path.join(buildDir, "content.js")], { stdio: "inherit" });
 
-// ---------- 油猴版（自包含：元数据头 + 内嵌词库 + 同一份引擎） ----------
+// ---------- 油猴版（词库外置以避开 Greasy Fork 的压缩代码规则：@resource 指向 GitHub raw） ----------
 
 const userscriptHeader = [
   "// ==UserScript==",
@@ -176,15 +176,17 @@ const userscriptHeader = [
   "// @author        steamdb-zh-cn contributors",
   "// @match         https://steamdb.info/*",
   "// @run-at        document-idle",
+  "// @grant         GM_getResourceText",
+  "// @resource      dictTranslations https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/translations.zh-CN.json",
+  "// @connect       raw.githubusercontent.com",
   "// @license       MIT",
   "// ==/UserScript==",
   "",
 ].join("\n");
 
+// 油猴版不再内嵌词库字面量：脚本本体保持小而清晰，词库通过 @resource 由油猴加载并通过 GM_getResourceText 读取。
 const userscript = [
   userscriptHeader,
-  `const EMBEDDED_DICTIONARY = ${JSON.stringify(rawDict)};`,
-  "",
   contentJs,
 ].join("\n");
 
@@ -215,4 +217,4 @@ console.log(`已生成 build/（${manifest.name} v${pkg.version}）`);
 console.log(`词库：global ${Object.keys(rawDict.global).length} 条 / pages ${rawDict.pages.length} 组 / attrs ${Object.keys(rawDict.attrs).length} 条`);
 console.log(`已打包 ${baseName}.zip（${zipBuffer.length} 字节）`);
 console.log(`已打包 ${baseName}.crx（${crxBuffer.length} 字节，扩展 ID ${crxId}）`);
-console.log(`已生成油猴版 ${userscriptName}（${Buffer.byteLength(userscript, "utf8")} 字节，词库内嵌）`);
+console.log(`已生成油猴版 ${userscriptName}（${Buffer.byteLength(userscript, "utf8")} 字节，词库通过 @resource 外置）`);
