@@ -1536,7 +1536,14 @@
     "This page contains: Browse current Steam sale deals with powerful filters. Filter by price, discount, tags, features, and more. See historical lows and track your wishlist. Filters: ≥ 50% discount, ≥ 500 reviews": "此页面包含：浏览当前 Steam 促销特卖，支持强大的筛选功能。可按价格、折扣、标签、特性等筛选，查看历史最低价并追踪愿望单。常用筛选：≥ 50% 折扣、≥ 500 条评测。",
     "Discount intervention: DB persistance is not defined": "折扣干预：数据库尚未就绪",
     "at steamdb.pet.vet": "在 steamdb.pet.vet",
-    "Table is filtered to games with enough players, click here to view all. (sign in required)": "表格已筛选出玩家数足够的游戏，点击此处查看全部。（需要登录）"
+    "Table is filtered to games with enough players, click here to view all. (sign in required)": "表格已筛选出玩家数足够的游戏，点击此处查看全部。（需要登录）",
+    "This page is cached for up to an hour.": "此页面最多缓存一小时。",
+    "Update any profile in our Steam calculator.": "在 Steam 计算器中更新任意个人资料。",
+    "View badge on Steam community": "在 Steam 社区查看徽章",
+    "View your badge on Steam community": "在 Steam 社区查看你的徽章",
+    "SPONSOR Sponsor SteamDB and support its development": "SPONSOR 赞助 SteamDB 并支持其开发",
+    "Sponsor SteamDB and support its development": "赞助 SteamDB 并支持其开发",
+    "Community Market Maker": "社区市场参与者"
   },
   "pages": [
     {
@@ -2560,6 +2567,10 @@
     {
       "source": "^Showing (\\d+) to (\\d+) of ([\\d,]+) entries$",
       "target": "显示第 $1 至 $2 条，共 $3 条"
+    },
+    {
+      "source": "^Show other (\\d+) users$",
+      "target": "显示另外 $1 位用户"
     }
   ]
 }

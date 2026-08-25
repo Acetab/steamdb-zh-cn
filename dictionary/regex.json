@@ -234,5 +234,9 @@
   {
     "source": "^Showing (\\d+) to (\\d+) of ([\\d,]+) entries$",
     "target": "显示第 $1 至 $2 条，共 $3 条"
+  },
+  {
+    "source": "^Show other (\\d+) users$",
+    "target": "显示另外 $1 位用户"
   }
 ]
