@@ -2,6 +2,10 @@
 
 在 SteamDB（steamdb.info）网页上把常见界面文本改写为简体中文的浏览器扩展。**非官方项目**，与 SteamDB 网站及其官方扩展无任何关联。
 
+**GitHub**：<https://github.com/Acetab/steamdb-zh-cn> · **许可**：[MIT](LICENSE)
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 ## 特性
 
 - 纯本地运行：词库随扩展分发（`translations.zh-CN.json`），运行时在页面内改写文本，**不发起任何网络请求、不上传任何数据**。
@@ -25,6 +29,11 @@
 - 代码字段名（`BillingType`、`clienticon` 等）、品牌/游戏名、句子片段不收入词库。
 
 ## 安装
+
+**从 GitHub Releases 下载**（推荐）：打开 <https://github.com/Acetab/steamdb-zh-cn/releases> 下载最新版：
+
+- 油猴版：`steamdb-zh-cn-<版本>.user.js`（Tampermonkey / Violentmonkey 直接安装）
+- 扩展版：`steamdb-zh-cn-<版本>.zip`（Chrome/Edge「加载已解压的扩展程序」需先解压）或 `.crx`
 
 **油猴脚本版**（Tampermonkey / Violentmonkey）：
 
