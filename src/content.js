@@ -212,6 +212,82 @@
 
   // ================= 页面改写 =================
 
+  // 内联标签（包裹单词/短语会拆分文本节点，需要拼接匹配）
+  const INLINE_TAGS = new Set(["b", "strong", "em", "i", "span", "u", "small", "mark", "s"]);
+
+  // 递归收集元素内的叶子文本节点（仅文本 + 内联标签；遇到 <a> 或块级元素返回 false）
+  function collectInlineLeaves(el, out) {
+    for (const child of el.childNodes) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        if (child.nodeValue.trim()) out.push(child);
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
+        const tag = child.tagName.toLowerCase();
+        if (tag === "a" || !INLINE_TAGS.has(tag)) return false;
+        if (!collectInlineLeaves(child, out)) return false;
+      } else {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // 从节点向左右扩展相邻内联文本（遇 <a>/块级/含中文的已翻译文本即停止），用于拼接匹配
+  function expandInlineLeaves(node, out) {
+    let cur = node.previousSibling;
+    while (cur) {
+      if (cur.nodeType === Node.TEXT_NODE) {
+        if (!cur.nodeValue.trim()) { cur = cur.previousSibling; continue; }
+        if (hasCjk(cur.nodeValue)) break; // 已翻译的中文，不再跨过
+        out.unshift(cur);
+      } else if (cur.nodeType === Node.ELEMENT_NODE) {
+        const tag = cur.tagName.toLowerCase();
+        if (tag === "a" || !INLINE_TAGS.has(tag)) break;
+        const inner = [];
+        if (!collectInlineLeaves(cur, inner)) break;
+        if (inner.some((n) => hasCjk(n.nodeValue))) break;
+        for (const n of inner.reverse()) out.unshift(n);
+      } else break;
+      cur = cur.previousSibling;
+    }
+    cur = node.nextSibling;
+    while (cur) {
+      if (cur.nodeType === Node.TEXT_NODE) {
+        if (!cur.nodeValue.trim()) { cur = cur.nextSibling; continue; }
+        if (hasCjk(cur.nodeValue)) break;
+        out.push(cur);
+      } else if (cur.nodeType === Node.ELEMENT_NODE) {
+        const tag = cur.tagName.toLowerCase();
+        if (tag === "a" || !INLINE_TAGS.has(tag)) break;
+        const inner = [];
+        if (!collectInlineLeaves(cur, inner)) break;
+        if (inner.some((n) => hasCjk(n.nodeValue))) break;
+        out.push(...inner);
+      } else break;
+      cur = cur.nextSibling;
+    }
+  }
+
+  // 拼接匹配：内联标签拆分的多个文本节点，拼成完整文本查词库，命中后按原文比例回填
+  function tryInlineTranslate(node) {
+    const leaves = [node];
+    expandInlineLeaves(node, leaves);
+    if (leaves.length < 2) return false;
+    const full = leaves.map((n) => n.nodeValue).join("");
+    const bare = normalize(full);
+    if (bare.length <= 1 || bare.length > MAX_TEXT) return false;
+    const translated = lookup(bare);
+    if (!translated || translated === bare) return false;
+    const total = full.length;
+    let idx = 0;
+    leaves.forEach((n, i) => {
+      const take = Math.round((translated.length * n.nodeValue.length) / total);
+      n.nodeValue = translated.slice(idx, idx + take);
+      idx += take;
+      if (i === leaves.length - 1) n.nodeValue += translated.slice(idx);
+    });
+    return true;
+  }
+
   function translateText(node) {
     const raw = node.nodeValue;
     if (!raw || raw.length > MAX_TEXT || isSkipped(node)) return;
@@ -219,7 +295,10 @@
     if (translated && translated !== raw) {
       node.nodeValue = translated;
       dropCollected(raw);
+      return;
     }
+    // 单节点未命中：尝试内联拼接匹配（处理 <b>/<span> 等标签拆分的文本）
+    tryInlineTranslate(node);
   }
 
   function translateAttribute(el, name) {
