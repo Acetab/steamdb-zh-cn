@@ -32,7 +32,6 @@
 **油猴脚本版**（Tampermonkey / Violentmonkey）：
 
 - 直接安装：<https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/dist/steamdb-zh-cn.user.js>
-- 或国内镜像（jsDelivr）：<https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/dist/steamdb-zh-cn.user.js>
 
 安装后打开 `steamdb.info`，右下角出现「译」按钮即生效。油猴版启动时**自动拉取最新词库**（本地缓存兜底，无需手动重装即可获得词库更新），不上传任何数据。
 
@@ -69,11 +68,7 @@ dictionary/
 
 补词流程：采集未翻译文本（「译」菜单）→ 筛选后加入对应文件 → `npm run build` → 提交（`translations.zh-CN.json` 为发布文件，需一并提交，供油猴加载）。
 
-油猴版词库加载机制：启动时先用本地缓存（GM 存储，首次安装为 `@resource` 快照）立即翻译，同时异步拉取 jsDelivr 上的最新词库（固定 `@main` URL），成功后应用并自动重译当前页——**改词库后无需重装脚本**，刷新页面即生效。若想立即生效（跳过 CDN 缓存延迟），可用 purge 接口强制刷新：
-
-```
-https://purge.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/translations.zh-CN.json
-```
+油猴版词库加载机制：启动时先用本地缓存（GM 存储，首次安装为 `@resource` 快照）立即翻译，同时异步拉取 GitHub raw 上的最新词库（固定 URL），成功后应用并自动重译当前页——**改词库后无需重装脚本**，刷新页面即生效。GitHub raw 无 CDN 缓存，push 即最新。
 
 ## 自动发布（可选）
 

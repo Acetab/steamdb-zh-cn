@@ -7,15 +7,15 @@
 // @match         https://steamdb.info/*
 // @run-at        document-idle
 // @grant         GM_getResourceText
-// @resource      dictTranslations https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/translations.zh-CN.json
-// @connect       cdn.jsdelivr.net
+// @resource      dictTranslations https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/translations.zh-CN.json
+// @connect       raw.githubusercontent.com
 // @grant         GM_xmlhttpRequest
 // @grant         GM_getValue
 // @grant         GM_setValue
 // @license       MIT
 // ==/UserScript==
 
-const REMOTE_DICT_URL = "https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/translations.zh-CN.json";
+const REMOTE_DICT_URL = "https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/translations.zh-CN.json";
 
 /*!
  * SteamDB 简体中文界面汉化 —— 非官方扩展
