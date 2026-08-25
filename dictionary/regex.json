@@ -173,7 +173,7 @@
   },
   {
     "source": "^Rating: ≥(\\d+)%$",
-    "target": "评级：≥$1%"
+    "target": "评分：≥$1%"
   },
   {
     "source": "^Last (\\d+) months?$",
