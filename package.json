@@ -1,0 +1,11 @@
+{
+  "name": "steamdb-zh-cn-standalone",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "SteamDB 简体中文界面汉化（独立实现，MIT）",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "check": "node --check build/content.js"
+  }
+}
