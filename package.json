@@ -1,7 +1,7 @@
 {
   "name": "steamdb-zh-cn",
   "private": true,
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "description": "SteamDB 简体中文界面汉化（非官方，MIT）",
   "scripts": {

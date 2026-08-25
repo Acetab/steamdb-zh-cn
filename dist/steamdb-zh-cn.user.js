@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          SteamDB 中文汉化
 // @namespace     steamdb-zh-cn.local
-// @version        1.0.3
+// @version        1.0.4
 // @description   SteamDB 网页简体中文汉化（非官方，MIT）
 // @author        steamdb-zh-cn contributors
 // @match         https://steamdb.info/*
