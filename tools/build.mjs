@@ -216,6 +216,10 @@ const userscriptName = `steamdb-zh-cn-${pkg.version}.user.js`;
 await writeFile(path.join(buildDir, userscriptName), userscript, "utf8");
 execFileSync(process.execPath, ["--check", path.join(buildDir, userscriptName)], { stdio: "inherit" });
 
+// 固定路径副本：供 Greasy Fork 脚本同步（Sync）引用，随仓库提交
+await mkdir(path.join(root, "dist"), { recursive: true });
+await writeFile(path.join(root, "dist", "steamdb-zh-cn.user.js"), userscript, "utf8");
+
 const zipBuffer = buildZip([
   { name: "manifest.json", data: Buffer.from(manifestText, "utf8") },
   { name: "content.js", data: Buffer.from(contentJs, "utf8") },
