@@ -7,6 +7,6 @@
   "scripts": {
     "audit": "node tools/audit.mjs",
     "build": "node tools/merge-dict.mjs && node tools/build.mjs",
-    "check": "node --check build/content.js && node --check build/steamdb-zh-cn-1.0.0.user.js"
+    "check": "node --check build/content.js && node --check dist/steamdb-zh-cn.user.js && node tools/test-run.mjs"
   }
 }

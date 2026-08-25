@@ -64,8 +64,9 @@
     index = { global, page: page ? page.terms : null, attrs, regex };
   }
 
-  // 油猴远程词库地址（由构建脚本注入 `const REMOTE_DICT_URL = ...`；扩展版无此变量）
-  const REMOTE_DICT_URL =
+  // 油猴远程词库地址（由构建脚本注入顶层 `const REMOTE_DICT_URL = ...`；扩展版无此变量，
+  // 此处用不同变量名避免与注入的 const 触发暂时性死区）
+  const remoteDictUrl =
     typeof REMOTE_DICT_URL !== "undefined" ? REMOTE_DICT_URL : null;
 
   // 油猴本地词库缓存（GM 存储，跨页面共享）
@@ -90,10 +91,10 @@
 
   // 油猴：异步拉取最新词库，成功后应用并重译当前页（失败静默回退本地词库）
   function refreshRemoteDict() {
-    if (!REMOTE_DICT_URL || typeof GM_xmlhttpRequest !== "function") return;
+    if (!remoteDictUrl || typeof GM_xmlhttpRequest !== "function") return;
     GM_xmlhttpRequest({
       method: "GET",
-      url: REMOTE_DICT_URL,
+      url: remoteDictUrl,
       timeout: 10000,
       onload(res) {
         if (res.status < 200 || res.status >= 300) {
