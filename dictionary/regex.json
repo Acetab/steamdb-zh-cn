@@ -230,5 +230,9 @@
   {
     "source": "^Dec (\\d{4})$",
     "target": "$1 年 12 月"
+  },
+  {
+    "source": "^Showing (\\d+) to (\\d+) of ([\\d,]+) entries$",
+    "target": "显示第 $1 至 $2 条，共 $3 条"
   }
 ]
