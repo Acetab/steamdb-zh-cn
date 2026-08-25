@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "updatedAt": "2026-08-25",
     "note": "独立词库：Steam 官方简体中文术语优先；源文件按页面拆分维护于 dictionary/。"
   },
@@ -1375,7 +1375,23 @@
     "Requires our browser extension to enable all filters (including showing all your DLC)": "需安装浏览器扩展才能启用全部筛选（含显示你的全部 DLC）",
     "Only numbers (with or without fractions)": "仅数字（可含小数）",
     "Use keywords to find matches. \"Quotes\" for exact phrases. Exclude terms with ! symbol, e.g. \"!demo\"": "用关键词查找匹配。\"引号\"为精确短语，! 排除词条，如 \"!demo\"",
-    "Steam data for everyone since 2012 Support us by donating or becoming a sponsor": "自 2012 年为所有人提供 Steam 数据，欢迎捐赠或成为赞助者支持我们"
+    "Steam data for everyone since 2012 Support us by donating or becoming a sponsor": "自 2012 年为所有人提供 Steam 数据，欢迎捐赠或成为赞助者支持我们",
+    "Depots: Activate to sort": "Depot：点击排序",
+    "last month": "上个月",
+    "yesterday": "昨天",
+    "TBA": "待定",
+    "PEAK": "峰值",
+    "New concurrent players max peak today": "今日同时在线峰值新高",
+    "Next events": "后续活动",
+    "Next messages": "后续消息",
+    "Previous events": "过往活动",
+    "Previous messages": "过往消息",
+    "Filter events": "筛选活动",
+    "Trending on SteamDB": "SteamDB 趋势",
+    "View event on Steam": "在 Steam 上查看活动",
+    "Your profile url or steamid": "输入个人资料链接或 SteamID",
+    "64-bit SteamID": "64 位 SteamID",
+    "Euro": "欧元"
   },
   "pages": [
     {

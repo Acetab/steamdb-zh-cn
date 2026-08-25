@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name          SteamDB 中文汉化
 // @namespace     steamdb-zh-cn.local
-// @version        1.0.0
+// @version        1.0.1
 // @description   SteamDB 网页简体中文汉化（非官方，MIT）
 // @author        steamdb-zh-cn contributors
 // @match         https://steamdb.info/*
 // @run-at        document-idle
 // @grant         GM_getResourceText
-// @resource      dictTranslations https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@5942d20b9e61d0380a0ebee838ea890e84251b23/translations.zh-CN.json
+// @resource      dictTranslations https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@03cf432567590f93a3e09b92e4aadfe99566b94b/translations.zh-CN.json
 // @connect       cdn.jsdelivr.net
 // @license       MIT
 // ==/UserScript==
