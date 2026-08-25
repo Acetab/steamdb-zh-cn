@@ -1525,7 +1525,15 @@
     "Calculate the value of your": "计算你的",
     "🙏 Help SteamDB continue tracking data by": "🙏 请通过以下方式帮助 SteamDB 继续追踪数据：",
     ", our bot will be able to update the package name.": "，我们的机器人即可更新此子项的名称。",
-    "(an alternative to steamcmd).": "（steamcmd 的替代品）。"
+    "(an alternative to steamcmd).": "（steamcmd 的替代品）。",
+    "By default DLCs, soundtracks, and videos are hidden from the table above. You can see these by using \"filter by type\".": "默认情况下，DLC、原声带和视频已从上方表格中隐藏，可通过「按类型筛选」查看。",
+    "Product has not been this cheap before (new historical low).": "从未如此便宜（新的历史最低价）。",
+    "Lighter blue discount": "浅蓝色折扣",
+    "New historical low (rare discount): Previous historical low was set 1.5+ years ago, or significant price drop (50%+).": "新历史最低价（稀有折扣）：此前历史最低价在 1.5 年以上，或出现大幅降价（50% 以上）。",
+    "Product is priced on par with lowest recorded price.": "价格与历史最低记录持平。",
+    "Product is priced on par with lowest recorded price in last two years.": "价格与近两年最低记录持平。",
+    "Game icon explanation": "游戏图标含义说明",
+    "This page contains: Browse current Steam sale deals with powerful filters. Filter by price, discount, tags, features, and more. See historical lows and track your wishlist. Filters: ≥ 50% discount, ≥ 500 reviews": "此页面包含：浏览当前 Steam 促销特卖，支持强大的筛选功能。可按价格、折扣、标签、特性等筛选，查看历史最低价并追踪愿望单。常用筛选：≥ 50% 折扣、≥ 500 条评测。"
   },
   "pages": [
     {
