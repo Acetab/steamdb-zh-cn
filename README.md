@@ -2,13 +2,10 @@
 
 在 SteamDB（steamdb.info）网页上把常见界面文本改写为简体中文的浏览器扩展。**非官方项目**，与 SteamDB 网站及其官方扩展无任何关联。
 
-**GitHub**：<https://github.com/Acetab/steamdb-zh-cn> · **许可**：[MIT](LICENSE)
-
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## 特性
 
-- 纯本地运行：词库随扩展分发，运行时在页面内改写文本，**不联网、不上传任何数据**
+- 纯本地运行：词库随扩展分发，运行时在页面内改写文本，不联网、不上传任何数据
 - 动态内容监听：搜索建议、切换标签、异步加载的内容自动翻译
 - 页面内浮动按钮「译」：暂停/启用汉化、采集未翻译文本
 - 词库 2,000+ 条，覆盖 SteamDB 主要固定界面文本
@@ -80,9 +77,3 @@ git tag v1.0.1 && git push --tags
 ## 协议
 
 MIT License。本项目为全新开发，翻译引擎与词库均为本项目原创。
-
-## 上架商店（计划）
-
-- 命名避开官方 SteamDB 扩展及网站商标
-- Chrome Web Store 注册费 $5，Edge Add-ons 免费
-- 单用途声明、隐私说明（不收集数据）、MIT 源码公开
