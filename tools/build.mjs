@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import crypto from "node:crypto";
 import { execFileSync } from "node:child_process";
+import { auditDictionary } from "./audit.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
@@ -55,6 +56,16 @@ for (const entry of rawDict.pages) {
   for (const [source, target] of Object.entries(entry.terms)) {
     assert(typeof target === "string" && target.trim().length > 0, `pages[${entry.path}] 词条 "${source}" 的译文为空`);
   }
+}
+
+// 深度词库审计：错误阻断构建，警告仅提示
+const { errors: auditErrors, warnings: auditWarnings } = auditDictionary(rawDict);
+if (auditWarnings.length) {
+  console.log(`⚠️ 词库审计 ${auditWarnings.length} 条警告：`);
+  for (const warning of auditWarnings) console.log(`  - ${warning}`);
+}
+if (auditErrors.length) {
+  throw new Error(`词库审计失败（${auditErrors.length} 条）：\n  ${auditErrors.join("\n  ")}`);
 }
 
 // ---------- 最小 ZIP 写入器（STORE，零依赖） ----------

@@ -1,0 +1,39 @@
+name: Release
+
+# 打 tag（如 v1.0.1）时自动构建并发布 GitHub Release：
+#   git tag v1.0.1 && git push --tags
+# 产物：zip / crx / 油猴 user.js，全部上传到 Release 资产。
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build
+        run: npm run build
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          gh release create "$TAG" \
+            build/steamdb-zh-cn-*.zip \
+            build/steamdb-zh-cn-*.crx \
+            build/steamdb-zh-cn-*.user.js \
+            --generate-notes

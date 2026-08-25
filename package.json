@@ -5,7 +5,8 @@
   "type": "module",
   "description": "SteamDB 简体中文界面汉化（非官方，MIT）",
   "scripts": {
+    "audit": "node tools/audit.mjs",
     "build": "node tools/build.mjs",
-    "check": "node --check build/content.js"
+    "check": "node --check build/content.js && node --check build/steamdb-zh-cn-1.0.0.user.js"
   }
 }
