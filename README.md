@@ -1,4 +1,4 @@
-# SteamDB 简体中文界面汉化（非官方）
+# SteamDB 中文汉化（非官方）
 
 在 SteamDB（steamdb.info）网页上把常见界面文本改写为简体中文的浏览器扩展。**非官方项目**，与 SteamDB 网站及其官方扩展无任何关联。
 
@@ -29,19 +29,17 @@
 
 ## 安装
 
-## 安装
+**油猴脚本版**（Tampermonkey / Violentmonkey）：
 
-**油猴脚本版**（Tampermonkey / Violentmonkey）二选一：
-
-- **Greasy Fork 一键安装**：[SteamDB 简体中文界面汉化（非官方）](https://greasyfork.org/zh-CN/scripts/592897-steamdb-简体中文界面汉化-非官方)
-- **GitHub Releases**：[下载](https://github.com/Acetab/steamdb-zh-cn/releases) `steamdb-zh-cn-<版本>.user.js` 后拖入油猴安装
+- 直接安装：<https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/dist/steamdb-zh-cn.user.js>
+- 或国内镜像（jsDelivr）：<https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/dist/steamdb-zh-cn.user.js>
 
 安装后打开 `steamdb.info`，右下角出现「译」按钮即生效。词库通过 `@resource` 在安装时缓存到本地，运行期不联网。
 
 **扩展版**（Chrome / Edge / Steam 客户端内置浏览器）：
 
-- 从 [GitHub Releases](https://github.com/Acetab/steamdb-zh-cn/releases) 下载 `steamdb-zh-cn-<版本>.zip` 或 `.crx`
-- 打开 `chrome://extensions` → 开启开发者模式 → 「加载已解压的扩展程序」选择解压后的目录，或直接拖入 `.crx`
+- 本地构建产物：`npm run build` 后取 `build/` 目录（「加载已解压的扩展程序」）或 `build/steamdb-zh-cn-<版本>.zip` / `.crx`
+- 打开 `chrome://extensions` → 开启开发者模式 → 「加载已解压的扩展程序」选择 `build/` 目录，或直接拖入 `.crx`
 
 ## 构建
 
@@ -71,9 +69,21 @@ dictionary/
 
 补词流程：采集未翻译文本（「译」菜单）→ 筛选后加入对应文件 → `npm run build` → 提交（`translations.zh-CN.json` 为发布文件，需一并提交，供油猴 `@resource` 引用）。
 
-## 自动发布
+油猴版词库通过固定的 jsDelivr URL 加载（`@main` 分支，URL 恒定不变）：
 
-推送 `v*` 标签即触发 GitHub Actions 自动构建并发布 Release（zip / crx / user.js 三件套）：
+```
+https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/translations.zh-CN.json
+```
+
+词库更新后重新安装脚本即可生效；若想立即生效，可用 purge 接口强制刷新 CDN 缓存：
+
+```
+https://purge.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/translations.zh-CN.json
+```
+
+## 自动发布（可选）
+
+推送 `v*` 标签触发 GitHub Actions 构建并发布 Release（zip / crx / user.js 三件套），仅在有分发需求时使用：
 
 ```bash
 git tag v1.0.1 && git push --tags
