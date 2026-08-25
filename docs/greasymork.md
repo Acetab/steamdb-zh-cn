@@ -29,7 +29,9 @@ SteamDB 网页界面简体中文汉化。词库通过 @resource 加载，脚本�
 
 ## 词库与更新
 
-词库作为独立 JSON 通过 `@resource` 引用，托管在 GitHub 仓库的 `translations.zh-CN.json`。油猴在脚本安装时下载并缓存到本地，运行期不联网。词库更新只需等下一次脚本更新即可获取。
+词库作为独立 JSON 通过 `@resource` 引用，托管在 jsDelivr CDN（指向 GitHub 仓库的 `translations.zh-CN.json`，按版本精确引用）。油猴在脚本安装时下载并缓存到本地，运行期不联网。词库更新只需等下一次脚本更新即可获取。
+
+> 词库外置 + CDN 托管的方案思路参考了 Chr_ 的 SteamDB_CN 用户脚本；词库内容与翻译引擎均为本项目原创。
 
 ## 术语口径
 

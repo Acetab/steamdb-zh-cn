@@ -21,6 +21,17 @@ const buildDir = path.join(root, "build");
 const keysDir = path.join(root, "keys");
 const keyPath = path.join(keysDir, "extension.pem");
 
+// 词库 CDN：jsDelivr 托管 GitHub 文件。用当前 commit 精确定位，
+// 避免 @main 分支的 CDN 缓存延迟导致用户拿到旧词库。
+// （词库外置 + CDN 托管的方案思路参考了 Chr_ 的 SteamDB_CN 用户脚本；词库内容为本项目原创。）
+let dictResourceUrl;
+try {
+  const commit = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+  dictResourceUrl = `https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@${commit}/translations.zh-CN.json`;
+} catch {
+  dictResourceUrl = "https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/translations.zh-CN.json";
+}
+
 // ---------- 校验 ----------
 
 function assert(condition, message) {
@@ -177,8 +188,8 @@ const userscriptHeader = [
   "// @match         https://steamdb.info/*",
   "// @run-at        document-idle",
   "// @grant         GM_getResourceText",
-  "// @resource      dictTranslations https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/translations.zh-CN.json",
-  "// @connect       raw.githubusercontent.com",
+  `// @resource      dictTranslations ${dictResourceUrl}`,
+  "// @connect       cdn.jsdelivr.net",
   "// @license       MIT",
   "// ==/UserScript==",
   "",
