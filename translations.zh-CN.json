@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "1.0.4",
+    "version": "1.0.5",
     "updatedAt": "2026-08-26",
     "note": "独立词库：Steam 官方简体中文术语优先；源文件按页面拆分维护于 dictionary/。"
   },
