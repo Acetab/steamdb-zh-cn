@@ -9,13 +9,14 @@
 // @grant         GM_getResourceText
 // @resource      dictTranslations https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/translations.zh-CN.json
 // @connect       raw.githubusercontent.com
+// @connect       cdn.jsdelivr.net
 // @grant         GM_xmlhttpRequest
 // @grant         GM_getValue
 // @grant         GM_setValue
 // @license       MIT
 // ==/UserScript==
 
-const REMOTE_DICT_URL = "https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/translations.zh-CN.json";
+const REMOTE_DICT_URLS = ["https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/translations.zh-CN.json","https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/translations.zh-CN.json"];
 
 /*!
  * SteamDB 简体中文界面汉化 —— 非官方扩展
@@ -86,10 +87,13 @@ const REMOTE_DICT_URL = "https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/
     index = { global, page: page ? page.terms : null, attrs, regex };
   }
 
-  // 油猴远程词库地址（由构建脚本注入顶层 `const REMOTE_DICT_URL = ...`；扩展版无此变量，
+  // 油猴远程词库源列表（由构建脚本注入顶层 `const REMOTE_DICT_URLS = [...]`；扩展版无此变量，
+  // 主源 GitHub raw（push 即最新），备用源 jsDelivr（国内快，接受短暂缓存滞后）。
   // 此处用不同变量名避免与注入的 const 触发暂时性死区）
-  const remoteDictUrl =
-    typeof REMOTE_DICT_URL !== "undefined" ? REMOTE_DICT_URL : null;
+  const remoteDictUrls =
+    typeof REMOTE_DICT_URLS !== "undefined" && Array.isArray(REMOTE_DICT_URLS)
+      ? REMOTE_DICT_URLS
+      : [];
 
   // 油猴本地词库缓存（GM 存储，跨页面共享）
   function loadCachedDict() {
@@ -111,35 +115,45 @@ const REMOTE_DICT_URL = "https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/
     }
   }
 
-  // 油猴：异步拉取最新词库，成功后应用并重译当前页（失败静默回退本地词库）
+  // 油猴：按源列表依次拉取最新词库，成功后应用并重译当前页（全部失败静默回退本地缓存）
   function refreshRemoteDict() {
-    if (!remoteDictUrl || typeof GM_xmlhttpRequest !== "function") return;
-    GM_xmlhttpRequest({
-      method: "GET",
-      url: remoteDictUrl,
-      timeout: 10000,
-      onload(res) {
-        if (res.status < 200 || res.status >= 300) {
-          console.warn(`[SteamDB CN] 词库远程更新失败 HTTP ${res.status}，继续使用本地词库。`);
-          return;
-        }
-        try {
-          const raw = JSON.parse(res.responseText);
-          applyDictionary(raw);
-          saveCachedDict(raw);
-          console.info("[SteamDB CN] 词库已远程更新，重新翻译页面。");
-          scan(document.body || document.documentElement);
-        } catch (err) {
-          console.warn("[SteamDB CN] 远程词库解析失败，继续使用本地词库。", err);
-        }
-      },
-      onerror() {
-        console.warn("[SteamDB CN] 词库远程更新失败，继续使用本地词库。");
-      },
-      ontimeout() {
-        console.warn("[SteamDB CN] 词库远程更新超时，继续使用本地词库。");
-      },
-    });
+    if (!remoteDictUrls.length || typeof GM_xmlhttpRequest !== "function") return;
+    let idx = 0;
+    const tryNext = () => {
+      if (idx >= remoteDictUrls.length) return; // 全部源失败，继续用本地缓存
+      const url = remoteDictUrls[idx++];
+      GM_xmlhttpRequest({
+        method: "GET",
+        url,
+        timeout: 10000,
+        onload(res) {
+          if (res.status < 200 || res.status >= 300) {
+            console.warn(`[SteamDB CN] 词库源 ${url} 失败 HTTP ${res.status}，尝试下一个。`);
+            tryNext();
+            return;
+          }
+          try {
+            const raw = JSON.parse(res.responseText);
+            applyDictionary(raw);
+            saveCachedDict(raw);
+            console.info("[SteamDB CN] 词库已远程更新，重新翻译页面。");
+            scan(document.body || document.documentElement);
+          } catch (err) {
+            console.warn("[SteamDB CN] 远程词库解析失败，尝试下一个源。", err);
+            tryNext();
+          }
+        },
+        onerror() {
+          console.warn(`[SteamDB CN] 词库源 ${url} 请求失败，尝试下一个。`);
+          tryNext();
+        },
+        ontimeout() {
+          console.warn(`[SteamDB CN] 词库源 ${url} 超时，尝试下一个。`);
+          tryNext();
+        },
+      });
+    };
+    tryNext();
   }
 
   function loadDictionary() {

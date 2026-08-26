@@ -24,9 +24,11 @@ const buildDir = path.join(root, "build");
 const keysDir = path.join(root, "keys");
 const keyPath = path.join(keysDir, "extension.pem");
 
-// 词库 CDN：直接用 GitHub raw 托管，URL 恒定、push 即最新、无 CDN 缓存延迟。
+// 词库源：主源 GitHub raw（push 即最新、无 CDN 缓存延迟），备用源 jsDelivr（国内访问快，
+// 接受短暂缓存滞后，仅当主源不可用时启用）。
 // （词库外置 + 远程加载的方案思路参考了 Chr_ 的 SteamDB_CN 用户脚本；词库内容为本项目原创。）
 const dictResourceUrl = "https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/translations.zh-CN.json";
+const dictFallbackUrl = "https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/translations.zh-CN.json";
 
 // ---------- 校验 ----------
 
@@ -196,6 +198,7 @@ const userscriptHeader = [
   "// @grant         GM_getResourceText",
   `// @resource      dictTranslations ${dictResourceUrl}`,
   "// @connect       raw.githubusercontent.com",
+  "// @connect       cdn.jsdelivr.net",
   "// @grant         GM_xmlhttpRequest",
   "// @grant         GM_getValue",
   "// @grant         GM_setValue",
@@ -204,8 +207,8 @@ const userscriptHeader = [
   "",
 ].join("\n");
 
-// 油猴版词库：@resource 安装时缓存 + 启动时异步拉取最新（REMOTE_DICT_URL 由构建注入）
-const remoteDictInject = `const REMOTE_DICT_URL = ${JSON.stringify(dictResourceUrl)};`;
+// 油猴版词库：@resource 安装时缓存 + 启动时按源列表依次拉取最新（主 raw → 备 jsDelivr）
+const remoteDictInject = `const REMOTE_DICT_URLS = ${JSON.stringify([dictResourceUrl, dictFallbackUrl])};`;
 const userscript = [
   userscriptHeader,
   remoteDictInject,
