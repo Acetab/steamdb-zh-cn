@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.4",
-    "updatedAt": "2026-08-25",
+    "updatedAt": "2026-08-26",
     "note": "独立词库：Steam 官方简体中文术语优先；源文件按页面拆分维护于 dictionary/。"
   },
   "global": {
@@ -1543,7 +1543,38 @@
     "View your badge on Steam community": "在 Steam 社区查看你的徽章",
     "SPONSOR Sponsor SteamDB and support its development": "SPONSOR 赞助 SteamDB 并支持其开发",
     "Sponsor SteamDB and support its development": "赞助 SteamDB 并支持其开发",
-    "Community Market Maker": "社区市场参与者"
+    "Community Market Maker": "社区市场参与者",
+    "all-time low:": "历史最低价：",
+    "current 2-year low": "当前近两年最低价",
+    "2-year low:": "近两年最低价：",
+    "24h Peak:": "24 小时峰值：",
+    "Account Value": "账户价值",
+    "All games": "所有游戏",
+    "Awards Given": "已送出的奖励",
+    "Awards Received": "收到的奖励",
+    "lowest prices": "最低价格",
+    "Highlight your owned, wished games, and DLCs.": "高亮你拥有的、愿望单中的游戏和 DLC。",
+    "Install our extension": "安装我们的扩展",
+    "Match all included tags": "匹配所有包含的标签",
+    "Release date": "发行日期",
+    ", Renamed:": "，重命名：",
+    ". All data is cached up to one hour.": "。所有数据最多缓存一小时。",
+    "button on product pages.": "产品页面上的按钮。",
+    "button to add items to this list. You can have 25 collections and 1000 items on your watchlist.": "点击按钮即可将项目添加到此列表。你最多可创建 25 个收藏、关注 1000 个项目。",
+    "click here to view all.": "点击此处查看全部。",
+    "Current filters:": "当前筛选：",
+    "Filters: Your owned games": "筛选：你拥有的游戏",
+    "Filters: Your wishlist": "筛选：你的愿望单",
+    "If you do not sign in to SteamDB within a year, your watchlist will be deleted, and eventually your account.": "若一年内未登录 SteamDB，你的关注列表将被删除，最终账号也会被删除。",
+    "Show only major patches": "仅显示主要补丁",
+    "Show only owned games": "仅显示已拥有的游戏",
+    "Table is filtered to games with enough players,": "表格已筛选出玩家数足够的游戏，",
+    "Table is limited to most played games to limit page size,": "表格限于最热门的游戏以控制页面大小，",
+    "Take a look at our deep discounts!": "看看我们的深度折扣！",
+    "Your watchlist is public, you can share it with the current link.": "你的关注列表是公开的，可通过当前链接分享。",
+    "≥ 500 reviews": "≥ 500 条评测",
+    "Depot: Activate to sort": "Depot：点击排序",
+    "25 or more hours": "25 小时以上"
   },
   "pages": [
     {
@@ -2333,7 +2364,14 @@
     "Rating: Activate to sort": "好评率：激活以排序",
     "Release: Activate to sort": "发行日期：激活以排序",
     "Updated: Activate to invert sorting": "更新时间：激活以反向排序",
-    "Name… Tip: use emojis!": "名称… 提示：可使用表情符号！"
+    "Name… Tip: use emojis!": "名称… 提示：可使用表情符号！",
+    "Add to collection": "添加到收藏",
+    "Filter by category": "按分类筛选",
+    "Filter by tag": "按标签筛选",
+    "Remove from watchlist": "从关注列表移除",
+    "Search all patch notes…": "搜索全部补丁说明",
+    "View on Steam community": "在 Steam 社区查看",
+    "Last time public branch was updated": "上次公共分支更新时间"
   },
   "regex": [
     {
@@ -2575,6 +2613,30 @@
     {
       "source": "^Show other (\\d+) users$",
       "target": "显示另外 $1 位用户"
+    },
+    {
+      "source": "^(\\d+) seconds? ago$",
+      "target": "$1 秒前"
+    },
+    {
+      "source": "^Level (\\d+), ([\\d,]+) XP$",
+      "target": "等级 $1，$2 XP"
+    },
+    {
+      "source": "^/ ([\\d,]+) XP to next level$",
+      "target": "距下一级还差 $1 XP"
+    },
+    {
+      "source": "^Game Collector: ([\\d,]+) games owned$",
+      "target": "游戏收藏家：拥有 $1 款游戏"
+    },
+    {
+      "source": "^(\\d+) to (\\d+) hours$",
+      "target": "$1 至 $2 小时"
+    },
+    {
+      "source": "^(\\d+) Ban[s]? \\(([\\d,]+) days ago\\)$",
+      "target": "$1 次封禁（$2 天前）"
     }
   ]
 }

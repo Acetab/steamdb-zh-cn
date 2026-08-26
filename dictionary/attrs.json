@@ -34,5 +34,12 @@
   "Rating: Activate to sort": "好评率：激活以排序",
   "Release: Activate to sort": "发行日期：激活以排序",
   "Updated: Activate to invert sorting": "更新时间：激活以反向排序",
-  "Name… Tip: use emojis!": "名称… 提示：可使用表情符号！"
+  "Name… Tip: use emojis!": "名称… 提示：可使用表情符号！",
+  "Add to collection": "添加到收藏",
+  "Filter by category": "按分类筛选",
+  "Filter by tag": "按标签筛选",
+  "Remove from watchlist": "从关注列表移除",
+  "Search all patch notes…": "搜索全部补丁说明",
+  "View on Steam community": "在 Steam 社区查看",
+  "Last time public branch was updated": "上次公共分支更新时间"
 }

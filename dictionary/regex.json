@@ -238,5 +238,29 @@
   {
     "source": "^Show other (\\d+) users$",
     "target": "显示另外 $1 位用户"
+  },
+  {
+    "source": "^(\\d+) seconds? ago$",
+    "target": "$1 秒前"
+  },
+  {
+    "source": "^Level (\\d+), ([\\d,]+) XP$",
+    "target": "等级 $1，$2 XP"
+  },
+  {
+    "source": "^/ ([\\d,]+) XP to next level$",
+    "target": "距下一级还差 $1 XP"
+  },
+  {
+    "source": "^Game Collector: ([\\d,]+) games owned$",
+    "target": "游戏收藏家：拥有 $1 款游戏"
+  },
+  {
+    "source": "^(\\d+) to (\\d+) hours$",
+    "target": "$1 至 $2 小时"
+  },
+  {
+    "source": "^(\\d+) Ban[s]? \\(([\\d,]+) days ago\\)$",
+    "target": "$1 次封禁（$2 天前）"
   }
 ]
