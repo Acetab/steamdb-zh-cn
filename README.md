@@ -91,6 +91,13 @@ dictionary/
 
 油猴版先用本地缓存（GM 存储，首次安装为 `@resource` 快照）翻译，再按用户选定的来源更新。在线更新成功后应用词库并重译当前页；仅本地模式不会主动更新。来源选择的具体行为见安装章节。
 
+### 词库直链
+
+- [GitHub Raw 词库](https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/translations.zh-CN.json)
+- [jsDelivr CDN 词库](https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/translations.zh-CN.json)
+
+两条链接对应同一份发布词库，jsDelivr 可能因缓存暂时滞后。在页面右下角“译”菜单中选择自动切换、仅 GitHub、仅 jsDelivr 或仅本地词库。
+
 ## 自动发布（可选）
 
 发布前运行 `npm run build` 和 `npm run check`，在 `docs/releases/v<版本>.md` 编写更新说明，并同步 package.json 与 manifest.json。工作流会再次构建和检查，使用对应说明创建 Release。
