@@ -9,5 +9,3 @@ tools/migrate/todo-*
 tools/migrate/long-same.json
 # 用户保存的 SteamDB 页面快照（本地分析用，不入库）
 html-dump/
-# 本地代理工作规则，不属于发布源码或用户文档。
-AGENTS.md
