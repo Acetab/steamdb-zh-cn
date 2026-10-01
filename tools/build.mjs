@@ -18,8 +18,10 @@ const pkg = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const manifest = JSON.parse(await readFile(path.join(root, "manifest.json"), "utf8"));
 // 版本以 package.json 为准，避免 manifest.json 忘记同步
 manifest.version = pkg.version;
-const contentJs = await readFile(path.join(root, "src", "content.js"), "utf8");
+const engineSource = await readFile(path.join(root, "src", "content.js"), "utf8");
 const rawDict = JSON.parse(await readFile(path.join(root, "translations.zh-CN.json"), "utf8"));
+// 远程旧词库尚无 contexts 字段时，新引擎仍使用随发行版打包的上下文规则。
+const contentJs = `const DEFAULT_CONTEXTS = ${JSON.stringify(rawDict.contexts || [])};\n${engineSource}`;
 const buildDir = path.join(root, "build");
 const keysDir = path.join(root, "keys");
 const keyPath = path.join(keysDir, "extension.pem");

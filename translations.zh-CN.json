@@ -1,7 +1,7 @@
 {
   "meta": {
-    "version": "1.0.5",
-    "updatedAt": "2026-08-26",
+    "version": "1.0.8",
+    "updatedAt": "2026-10-01",
     "note": "独立词库：Steam 官方简体中文术语优先；源文件按页面拆分维护于 dictionary/。"
   },
   "global": {
@@ -2637,6 +2637,16 @@
     {
       "source": "^(\\d+) Ban[s]? \\(([\\d,]+) days ago\\)$",
       "target": "$1 次封禁（$2 天前）"
+    }
+  ],
+  "contexts": [
+    {
+      "path": "/app/",
+      "selector": "th",
+      "terms": {
+        "Languages": "语言",
+        "Players": "玩家人数"
+      }
     }
   ]
 }

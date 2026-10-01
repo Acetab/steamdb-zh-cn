@@ -24,7 +24,15 @@
   const SKIP_SELECTOR = [
     "script", "style", "noscript", "pre", "code", "kbd", "svg", "canvas",
     "video", "textarea", '[contenteditable="true"]', '[translate="no"]', ".notranslate",
+    '[contenteditable=""]', '[contenteditable="plaintext-only"]',
+    'a[href^="/app/"]', 'a[href^="/sub/"]', 'a[href^="/depot/"]', 'a[href^="/bundle/"]',
+    'a[href*="steamdb.info/app/"]', 'a[href*="steamcommunity.com/profiles/"]',
+    '.app-name', '.username', '.user-content', '[data-user-content]',
   ].join(",");
+  // 通用词条仅应用于界面控件；普通段落、数据单元格和主标题需明确上下文规则。
+  const UI_TEXT_SCOPE = 'button,label,legend,summary,option,th,dt,h2,h3,h4,nav,footer,'+
+    '[role="button"],[role="tab"],[role="menuitem"],[role="navigation"],'+
+    '.dropdown-menu,.panel-heading,.tabnav,.nav';
   // 采集未翻译文本时，只关心这些常见界面控件
   const COLLECT_SCOPE = [
     "button", "a", "p", "li", "td", "th", "dt", "dd", "h1", "h2", "h3", "h4",
@@ -41,6 +49,9 @@
   // ================= 词库 =================
 
   let index = null; // { global: Map, page: Map|null, attrs: Map }
+  let activeDictionary = null;
+  const translatedTexts = new WeakMap();
+  const translatedAttributes = new WeakMap();
 
   // 词库来源：油猴构建版会在脚本顶部注入 EMBEDDED_DICTIONARY（内嵌词库，自包含）；
   // 扩展版从扩展资源加载。两者共用同一套索引逻辑。
@@ -51,6 +62,7 @@
   }
 
   function applyDictionary(raw) {
+    activeDictionary = raw;
     // key 统一存归一化形式（折叠空白 + 弯直引号统一），与页面文本比较时同空间
     const normMap = (obj) =>
       new Map(Object.entries(obj || {}).map(([k, v]) => [normalize(k), v]));
@@ -64,7 +76,11 @@
     const regex = (raw.regex || [])
       .filter((r) => r && typeof r.source === "string" && typeof r.target === "string")
       .map((r) => [new RegExp(r.source), r.target]);
-    index = { global, page: page ? page.terms : null, attrs, regex };
+    const contextSource = Array.isArray(raw.contexts) ? raw.contexts :
+      (typeof DEFAULT_CONTEXTS !== 'undefined' ? DEFAULT_CONTEXTS : []);
+    const contexts = contextSource.filter(r => r && typeof r.selector === 'string' &&
+      (!r.path || location.pathname.startsWith(r.path))).map(r => ({...r, terms:normMap(r.terms)}));
+    index = { global, page: page ? page.terms : null, attrs, regex, contexts, pathname:location.pathname };
   }
 
   // 油猴远程词库源列表（由构建脚本注入顶层 `const REMOTE_DICT_URLS = [...]`；扩展版无此变量，
@@ -214,7 +230,23 @@
     return null;
   }
 
-  function lookup(text) {
+  function lookupContext(text, element, attribute = null) {
+    if (!element) return null;
+    for (const rule of index.contexts || []) {
+      if ((rule.attribute || null) !== attribute) continue;
+      try {
+        if (element.closest(rule.selector)) {
+          const result=pickTerm(text,rule.terms);
+          if(result !== null)return result;
+        }
+      } catch { /* 单条无效选择器不能中断其他翻译。 */ }
+    }
+    return null;
+  }
+  function lookup(text, element = null) {
+    const contextual=lookupContext(text,element);
+    if(contextual !== null)return contextual;
+    if(element && !element.closest(UI_TEXT_SCOPE))return null;
     const direct = pickTerm(text, index.page) || pickTerm(text, index.global);
     if (direct) return direct;
     for (const [pattern, target] of index.regex) {
@@ -288,7 +320,7 @@
     const full = leaves.map((n) => n.nodeValue).join("");
     const bare = normalize(full);
     if (bare.length <= 1 || bare.length > MAX_TEXT) return false;
-    const translated = lookup(bare);
+    const translated = lookup(bare, node.parentElement);
     if (!translated || translated === bare) return false;
     const total = full.length;
     let idx = 0;
@@ -302,27 +334,41 @@
   }
 
   function translateText(node) {
-    const raw = node.nodeValue;
+    const current = node.nodeValue;
+    const previous = translatedTexts.get(node);
+    const raw = previous && current === previous.output ? previous.original : current;
     if (!raw || raw.length > MAX_TEXT || isSkipped(node)) return;
-    const translated = lookup(raw);
+    const translated = lookup(raw, node.parentElement);
     if (translated && translated !== raw) {
-      node.nodeValue = translated;
+      if(current !== translated)node.nodeValue = translated;
+      translatedTexts.set(node,{original:raw,output:translated});
       dropCollected(raw);
       return;
     }
     // 单节点未命中：尝试内联拼接匹配（处理 <b>/<span> 等标签拆分的文本）
+    if(previous && current === previous.output){node.nodeValue=raw;translatedTexts.delete(node);}
     tryInlineTranslate(node);
   }
 
   function translateAttribute(el, name) {
-    const raw = el.getAttribute(name);
+    const current = el.getAttribute(name);
+    const records = translatedAttributes.get(el);
+    const previous = records && records.get(name);
+    const raw = previous && current === previous.output ? previous.original : current;
     if (!raw) return;
-    const translated = pickTerm(raw, index.attrs) || lookup(raw);
-    if (translated && translated !== raw) el.setAttribute(name, translated);
+    const translated = lookupContext(raw,el,name) || pickTerm(raw, index.attrs) || lookup(raw);
+    if (translated && translated !== raw) {
+      if(current !== translated)el.setAttribute(name, translated);
+      const next=records || new Map();next.set(name,{original:raw,output:translated});translatedAttributes.set(el,next);
+    } else if(previous && current === previous.output){
+      if(current !== raw)el.setAttribute(name,raw);
+      records.delete(name);
+    }
   }
 
   // 扫描一个根节点：先文本节点，再常见属性
   function scan(root) {
+    if (activeDictionary && index.pathname !== location.pathname) applyDictionary(activeDictionary);
     if (!root || !root.isConnected || isSkipped(root)) return;
     if (root.nodeType === Node.TEXT_NODE) {
       translateText(root);
@@ -333,6 +379,12 @@
     });
     let node;
     while ((node = walker.nextNode())) translateText(node);
+    // querySelectorAll 仅返回后代；动态属性变化的根控件也必须检查。
+    if (root.nodeType === Node.ELEMENT_NODE) {
+      translateAttribute(root, "placeholder");
+      translateAttribute(root, "aria-label");
+      translateAttribute(root, "title");
+    }
     for (const el of root.querySelectorAll("input[placeholder],textarea[placeholder],[aria-label],[title]")) {
       if (isSkipped(el)) continue;
       translateAttribute(el, "placeholder");
@@ -583,5 +635,7 @@
     attributes: true,
     attributeFilter: ["placeholder", "aria-label", "title"],
   });
+  window.addEventListener('popstate',()=>scan(document.body || document.documentElement));
+  window.addEventListener('pageshow',()=>scan(document.body || document.documentElement));
   console.info(`[SteamDB CN ${VERSION}] 就绪：全局 ${index.global.size} 条，当前页 ${index.page ? index.page.size : 0} 条，属性 ${index.attrs.size} 条。`);
 })();

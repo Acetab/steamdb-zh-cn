@@ -32,6 +32,7 @@ globalThis.document = {
 };
 globalThis.Node = { ELEMENT_NODE: 1, TEXT_NODE: 3, FILTER_ACCEPT: 1, FILTER_REJECT: 2, SHOW_TEXT: 4 };
 globalThis.location = { pathname: "/sales/", reload() {} };
+globalThis.window = {addEventListener(){}};
 globalThis.localStorage = { getItem: () => null, setItem: () => {} };
 globalThis.MutationObserver = class { constructor() {} observe() {} };
 globalThis.fetch = () => Promise.reject(new Error("no fetch in mock"));

@@ -9,6 +9,16 @@ import { fileURLToPath } from "node:url";
 export function auditDictionary(raw) {
   const errors = [];
   const warnings = [];
+  if(raw.contexts !== undefined && !Array.isArray(raw.contexts))errors.push('contexts 必须是数组');
+  for(const [i,rule] of (Array.isArray(raw.contexts)?raw.contexts:[]).entries()){
+    if(!rule || typeof rule.selector !== 'string' || !rule.selector.trim() ||
+      !rule.terms || typeof rule.terms !== 'object' || Array.isArray(rule.terms)){
+      errors.push(`contexts[${i}] 需要 selector 和 terms`);continue;
+    }
+    if(rule.path !== undefined && (typeof rule.path !== 'string' || !rule.path.startsWith('/')))errors.push(`contexts[${i}] path 无效`);
+    if(rule.attribute !== undefined && !['title','placeholder','aria-label'].includes(rule.attribute))errors.push(`contexts[${i}] attribute 不受支持`);
+    for(const [key,value] of Object.entries(rule.terms))if(!key.trim() || typeof value !== 'string' || !value.trim())errors.push(`contexts[${i}] 存在空词条或译文`);
+  }
 
   for (const [key, value] of Object.entries(raw.global || {})) {
     if (!key.trim()) errors.push("global 存在空 key");

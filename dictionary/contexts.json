@@ -1,0 +1,3 @@
+[
+  { "path": "/app/", "selector": "th", "terms": { "Languages": "语言", "Players": "玩家人数" } }
+]

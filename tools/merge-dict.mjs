@@ -17,6 +17,7 @@ async function readJson(file) {
 const global = await readJson(path.join(dictDir, "global.json"));
 const attrs = await readJson(path.join(dictDir, "attrs.json"));
 const regex = await readJson(path.join(dictDir, "regex.json"));
+const contexts = await readJson(path.join(dictDir, "contexts.json"));
 
 const pageFiles = (await readdir(pagesDir)).filter((f) => f.endsWith(".json")).sort();
 const pages = [];
@@ -40,6 +41,7 @@ const output = {
   pages,
   attrs,
   regex,
+  contexts,
 };
 
 await writeFile(path.join(root, "translations.zh-CN.json"), `${JSON.stringify(output, null, 2)}\n`, "utf8");
