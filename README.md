@@ -5,14 +5,14 @@
 
 ## 特性
 
-**1.0.8**（2026-10-01）：通用文字翻译仅在按钮、标签、表头、导航等界面控件中生效；普通段落、数据单元格及主标题需要明确上下文规则，宁可漏翻也不套用通用词条。增加游戏/软件链接、用户内容和编辑区保护。仍坚持范围与原文双重命中，只改文字节点或指定属性，保留内部结构；未实现通用 Shadow DOM 支持。较旧版可能少翻部分未标记的控件，可通过 contexts 精确补充。
+**1.0.9**（2026-10-01）：新增用户可选择的词库来源。沿用 1.0.8 的定向翻译保护：通用文字限于界面控件，普通正文和数据需明确上下文规则；未实现通用 Shadow DOM 支持。
 
-当前版本为 **1.0.8**。完整变更见[更新说明](docs/releases/v1.0.8.md)，安装包见[最新 Release](https://github.com/Acetab/steamdb-zh-cn/releases/latest)。
+当前版本为 **1.0.9**。完整变更见[更新说明](docs/releases/v1.0.9.md)，安装包见[最新 Release](https://github.com/Acetab/steamdb-zh-cn/releases/latest)。
 
 - 控件上下文规则优先于页面词典和通用词典；范围及原文均匹配才替换。
 - 单文字节点及属性保留原文记录，历史导航和页面恢复后重新匹配。
 - 设计参考 [maboloshi/github-chinese](https://github.com/maboloshi/github-chinese) 和 [MaydayV/github-chinese](https://github.com/MaydayV/github-chinese)，新增逻辑独立实现。
-- 扩展版纯本地运行（词库打包在扩展内，不联网）；油猴版启动时自动拉取最新词库（主 GitHub raw → 备 jsDelivr），不上传任何数据
+- 扩展版使用打包词库；油猴版可选择自动切换、仅 GitHub、仅 jsDelivr 或仅本地词库，不上传页面内容
 - 动态内容监听：搜索建议、切换标签、异步加载的内容自动翻译
 - 页面内浮动按钮「译」：暂停/启用汉化、采集未翻译文本
 - 词库 2,300+ 条（global 1,570 / pages 695 / attrs 43 / regex 66），覆盖 SteamDB 主要固定界面文本
@@ -40,11 +40,20 @@
 
 - 直接安装：<https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/dist/steamdb-zh-cn.user.js>
 
-安装后打开 `steamdb.info`，右下角出现「译」按钮即生效。油猴版启动时**自动拉取最新词库**（本地缓存兜底，无需手动重装即可获得词库更新），不上传任何数据。
+安装后打开 `steamdb.info`，右下角出现「译」按钮即生效。在该菜单选择“词库来源”，当前选项带 ✓；选择后自动刷新，设置跨页面保留。
+
+| 词库来源 | 在线更新行为 | 失败时 |
+| --- | --- | --- |
+| 自动（默认，保持旧版行为） | 先 GitHub Raw，失败再请求 jsDelivr | 使用本地缓存或安装快照 |
+| 仅 GitHub | 只请求 GitHub Raw | 使用本地词库，不切换 CDN |
+| 仅 jsDelivr | 只请求 jsDelivr；CDN 内容可能滞后 | 使用本地词库，不请求 GitHub |
+| 仅本地词库 | 引擎不主动检查在线词库 | 使用已有缓存或安装快照 |
+
+“仅本地”不控制油猴管理器：安装或更新脚本时，它仍可能下载 `@resource`；脚本自身的自动更新也由油猴设置决定。扩展版始终使用打包词库，不显示在线来源选项。
 
 **扩展版**（Chrome / Edge / Steam 客户端内置浏览器）：
 
-- [下载 1.0.8 ZIP](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.8/steamdb-zh-cn-1.0.8.zip)，解压后加载目录；[CRX 备选包](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.8/steamdb-zh-cn-1.0.8.crx)可能受浏览器安装限制。
+- [下载 1.0.9 ZIP](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.9/steamdb-zh-cn-1.0.9.zip)，解压后加载目录；[CRX 备选包](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.9/steamdb-zh-cn-1.0.9.crx)可能受浏览器安装限制。
 - 油猴版与扩展版不要同时启用。此次引擎整改需要更新脚本或扩展，单独更新词库不足以生效。
 - 本次已完成隔离 Edge 验证，Steam 内置浏览器尚未实测。
 
@@ -80,7 +89,7 @@ dictionary/
 
 补词流程：采集未翻译文本（「译」菜单）或保存页面 HTML 到 `html-dump/` 后用 `node tools/extract-untracked.mjs` 扫描 → 筛选后加入对应文件 → `npm run build` → 提交（`translations.zh-CN.json` 为发布文件，需一并提交，供油猴加载）。
 
-油猴版词库加载机制：启动时先用本地缓存（GM 存储，首次安装为 `@resource` 快照）立即翻译，同时按**源列表依次拉取**最新词库——主源 GitHub raw（push 即最新、无缓存延迟），失败自动切备用源 jsDelivr（国内快，接受短暂缓存滞后），全部失败回退本地缓存。成功后应用并自动重译当前页——**改词库后无需重装脚本，刷新页面即生效**。
+油猴版先用本地缓存（GM 存储，首次安装为 `@resource` 快照）翻译，再按用户选定的来源更新。在线更新成功后应用词库并重译当前页；仅本地模式不会主动更新。来源选择的具体行为见安装章节。
 
 ## 自动发布（可选）
 

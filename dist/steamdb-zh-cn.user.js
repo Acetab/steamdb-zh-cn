@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          SteamDB 中文汉化
 // @namespace     steamdb-zh-cn.local
-// @version        1.0.8
+// @version        1.0.9
 // @description   SteamDB 网页简体中文汉化（非官方，MIT）
 // @author        steamdb-zh-cn contributors
 // @match         https://steamdb.info/*
@@ -40,6 +40,7 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
     collect: "sdbcn2_collect_enabled",
     data: "sdbcn2_collected_data",
     dictCache: "sdbcn2_dict_cache",
+    sourceMode: "sdbcn2_source_mode",
   };
   const MAX_TEXT = 500; // 超过该长度的文本不处理（长段内容多为介绍/描述）
   const SKIP_SELECTOR = [
@@ -111,6 +112,24 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
     typeof REMOTE_DICT_URLS !== "undefined" && Array.isArray(REMOTE_DICT_URLS)
       ? REMOTE_DICT_URLS
       : [];
+  const sourceModes={auto:'自动（GitHub → jsDelivr）',github:'仅 GitHub',jsdelivr:'仅 jsDelivr',local:'仅本地词库'};
+  function readSourceMode(){
+    try {
+      const mode=typeof GM_getValue==='function'?GM_getValue(STORAGE.sourceMode,'auto'):localStorage.getItem(STORAGE.sourceMode);
+      return Object.hasOwn(sourceModes,mode)?mode:'auto';
+    } catch {return 'auto';}
+  }
+  function selectedSources(mode){
+    if(mode==='local')return [];
+    if(mode==='github')return remoteDictUrls.filter(url=>new URL(url).hostname==='raw.githubusercontent.com');
+    if(mode==='jsdelivr')return remoteDictUrls.filter(url=>new URL(url).hostname==='cdn.jsdelivr.net');
+    return remoteDictUrls;
+  }
+  function setSourceMode(mode){
+    if(typeof GM_setValue==='function')GM_setValue(STORAGE.sourceMode,mode);
+    else localStorage.setItem(STORAGE.sourceMode,mode);
+    location.reload();
+  }
 
   // 油猴本地词库缓存（GM 存储，跨页面共享）
   function loadCachedDict() {
@@ -134,11 +153,12 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
 
   // 油猴：按源列表依次拉取最新词库，成功后应用并重译当前页（全部失败静默回退本地缓存）
   function refreshRemoteDict() {
-    if (!remoteDictUrls.length || typeof GM_xmlhttpRequest !== "function") return;
+    const sources=selectedSources(readSourceMode());
+    if (!sources.length || typeof GM_xmlhttpRequest !== "function") return;
     let idx = 0;
     const tryNext = () => {
-      if (idx >= remoteDictUrls.length) return; // 全部源失败，继续用本地缓存
-      const url = remoteDictUrls[idx++];
+      if (idx >= sources.length) return; // 当前模式的源全部失败，继续用本地缓存
+      const url = sources[idx++];
       GM_xmlhttpRequest({
         method: "GET",
         url,
@@ -600,6 +620,10 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
   collected = collecting ? readCollected() : null;
 
   mountMenu([
+    ...(remoteDictUrls.length ? Object.entries(sourceModes).map(([mode,label])=>({
+      label:`${readSourceMode()===mode?'✓ ':''}词库来源：${label}`,
+      run:()=>setSourceMode(mode),
+    })) : []),
     {
       label: off ? "启用汉化" : "暂停汉化",
       run() {
