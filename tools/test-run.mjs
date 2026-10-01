@@ -37,7 +37,7 @@ globalThis.localStorage = { getItem: () => null, setItem: () => {} };
 globalThis.MutationObserver = class { constructor() {} observe() {} };
 globalThis.fetch = () => Promise.reject(new Error("no fetch in mock"));
 globalThis.GM_getResourceText = () =>
-  JSON.stringify({ global: { Test: "测试" }, pages: [], attrs: [], regex: [] });
+  JSON.stringify({ global: { Test: "测试" }, pages: [], attrs: {}, regex: [] });
 globalThis.GM_xmlhttpRequest = () => {};
 globalThis.GM_getValue = () => "";
 globalThis.GM_setValue = () => {};

@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "1.0.9",
+    "version": "1.0.10",
     "updatedAt": "2026-10-01",
     "note": "独立词库：Steam 官方简体中文术语优先；源文件按页面拆分维护于 dictionary/。"
   },
@@ -2645,7 +2645,50 @@
       "selector": "th",
       "terms": {
         "Languages": "语言",
-        "Players": "玩家人数"
+        "Players": "玩家人数",
+        "Interface": "界面",
+        "Full Audio": "完整音频",
+        "Subtitles": "字幕"
+      }
+    },
+    {
+      "path": "/app/",
+      "selector": "table tr > td:first-child",
+      "terms": {
+        "Developer": "开发商",
+        "Publisher": "发行商",
+        "Release Date": "发行日期",
+        "Last Update": "最后更新",
+        "Last Updated": "最后更新",
+        "SteamDB Rating": "SteamDB 评分"
+      }
+    },
+    {
+      "path": "/charts/",
+      "selector": "th",
+      "terms": {
+        "Players": "玩家人数",
+        "Current Players": "当前玩家人数",
+        "Peak Today": "今日峰值",
+        "All-Time Peak": "历史峰值"
+      }
+    },
+    {
+      "path": "/sales/",
+      "selector": "th",
+      "terms": {
+        "Price": "价格",
+        "Discount": "折扣",
+        "Release Date": "发行日期",
+        "SteamDB Rating": "SteamDB 评分"
+      }
+    },
+    {
+      "selector": "button,[role=button]",
+      "terms": {
+        "Reset filters": "重置筛选条件",
+        "Apply filters": "应用筛选条件",
+        "Clear filters": "清除筛选条件"
       }
     }
   ]

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          SteamDB 中文汉化
 // @namespace     steamdb-zh-cn.local
-// @version        1.0.9
+// @version        1.0.10
 // @description   SteamDB 网页简体中文汉化（非官方，MIT）
 // @author        steamdb-zh-cn contributors
 // @match         https://steamdb.info/*
@@ -18,7 +18,7 @@
 
 const REMOTE_DICT_URLS = ["https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/translations.zh-CN.json","https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/translations.zh-CN.json"];
 
-const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"语言","Players":"玩家人数"}}];
+const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"语言","Players":"玩家人数","Interface":"界面","Full Audio":"完整音频","Subtitles":"字幕"}},{"path":"/app/","selector":"table tr > td:first-child","terms":{"Developer":"开发商","Publisher":"发行商","Release Date":"发行日期","Last Update":"最后更新","Last Updated":"最后更新","SteamDB Rating":"SteamDB 评分"}},{"path":"/charts/","selector":"th","terms":{"Players":"玩家人数","Current Players":"当前玩家人数","Peak Today":"今日峰值","All-Time Peak":"历史峰值"}},{"path":"/sales/","selector":"th","terms":{"Price":"价格","Discount":"折扣","Release Date":"发行日期","SteamDB Rating":"SteamDB 评分"}},{"selector":"button,[role=button]","terms":{"Reset filters":"重置筛选条件","Apply filters":"应用筛选条件","Clear filters":"清除筛选条件"}}];
 /*!
  * SteamDB 简体中文界面汉化 —— 非官方扩展
  *
@@ -34,7 +34,7 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
 
   // ================= 配置 =================
 
-  const VERSION = "1.0.0";
+  const VERSION = "1.0.10";
   const STORAGE = {
     off: "sdbcn2_off",
     collect: "sdbcn2_collect_enabled",
@@ -83,8 +83,35 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
       : name;
   }
 
+  function validateDictionary(raw, remote = false) {
+    const record=v=>v && typeof v==='object' && !Array.isArray(v);
+    const terms=v=>record(v) && Object.entries(v).every(([k,t])=>k.trim() && typeof t==='string' && t.trim());
+    if(!record(raw)||!terms(raw.global)||!terms(raw.attrs)||!Array.isArray(raw.pages)||!Array.isArray(raw.regex))throw Error('词库结构不完整');
+    if(remote && !/^\d+\.\d+\.\d+$/.test(raw.meta?.version||''))throw Error('远程词库缺少有效版本');
+    for(const page of raw.pages)if(!record(page)||typeof page.path!=='string'||!page.path.startsWith('/')||!terms(page.terms))throw Error('页面词库无效');
+    for(const rule of raw.regex){
+      if(!record(rule)||typeof rule.source!=='string'||typeof rule.target!=='string')throw Error('正则词库无效');
+      new RegExp(rule.source);
+    }
+    if(raw.contexts!==undefined){
+      if(!Array.isArray(raw.contexts))throw Error('上下文词库无效');
+      for(const r of raw.contexts)if(!record(r)||typeof r.selector!=='string'||!r.selector.trim()||!terms(r.terms)||
+        (r.path!==undefined&&(typeof r.path!=='string'||!r.path.startsWith('/')))||
+        (r.attribute!==undefined&&!['title','placeholder','aria-label'].includes(r.attribute)))throw Error('上下文规则无效');
+    }
+    return raw;
+  }
+  function isOlderDictionary(candidate,current){
+    const parse=v=>/^\d+\.\d+\.\d+$/.test(v||'')?v.split('.').map(Number):null;
+    const a=parse(candidate?.meta?.version),b=parse(current?.meta?.version);
+    if(!a || !b)return false;
+    for(let i=0;i<3;i++)if(a[i]!==b[i])return a[i]<b[i];
+    const date=v=>/^\d{4}-\d{2}-\d{2}$/.test(v||'')?v:null;
+    const ad=date(candidate.meta.updatedAt),bd=date(current.meta.updatedAt);
+    return Boolean(ad&&bd&&ad<bd);
+  }
   function applyDictionary(raw) {
-    activeDictionary = raw;
+    validateDictionary(raw);
     // key 统一存归一化形式（折叠空白 + 弯直引号统一），与页面文本比较时同空间
     const normMap = (obj) =>
       new Map(Object.entries(obj || {}).map(([k, v]) => [normalize(k), v]));
@@ -103,6 +130,7 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
     const contexts = contextSource.filter(r => r && typeof r.selector === 'string' &&
       (!r.path || location.pathname.startsWith(r.path))).map(r => ({...r, terms:normMap(r.terms)}));
     index = { global, page: page ? page.terms : null, attrs, regex, contexts, pathname:location.pathname };
+    activeDictionary = raw;
   }
 
   // 油猴远程词库源列表（由构建脚本注入顶层 `const REMOTE_DICT_URLS = [...]`；扩展版无此变量，
@@ -136,7 +164,7 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
     if (typeof GM_getValue !== "function") return null;
     try {
       const raw = GM_getValue(STORAGE.dictCache, "");
-      return raw ? JSON.parse(raw) : null;
+      return raw ? validateDictionary(JSON.parse(raw)) : null;
     } catch {
       return null;
     }
@@ -170,7 +198,10 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
             return;
           }
           try {
-            const raw = JSON.parse(res.responseText);
+            const raw = validateDictionary(JSON.parse(res.responseText),true);
+            if(isOlderDictionary(raw,activeDictionary)){
+              console.warn('[SteamDB CN] 忽略旧版本词库，保留当前词库。');tryNext();return;
+            }
             applyDictionary(raw);
             saveCachedDict(raw);
             console.info("[SteamDB CN] 词库已远程更新，重新翻译页面。");
@@ -205,15 +236,19 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
       const cached = loadCachedDict();
       if (cached) {
         applyDictionary(cached);
-      } else if (typeof GM_getResourceText === "function") {
+      }
+      if (typeof GM_getResourceText === "function") {
         try {
           const text = GM_getResourceText("dictTranslations");
-          if (text) applyDictionary(JSON.parse(text));
+          if (text) {
+            const snapshot=validateDictionary(JSON.parse(text));
+            if(!activeDictionary || !isOlderDictionary(snapshot,activeDictionary))applyDictionary(snapshot);
+          }
         } catch (err) {
           console.warn("[SteamDB CN] @resource 词库解析失败。", err);
         }
       }
-      if (!index) applyDictionary({});
+      if (!index) applyDictionary({global:{},attrs:{},pages:[],regex:[]});
       refreshRemoteDict();
       return Promise.resolve();
     }
@@ -238,7 +273,7 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
       .then(applyDictionary)
       .catch((err) => {
         console.warn("[SteamDB CN] 词库加载失败，本页保持英文。", err);
-        applyDictionary({});
+        applyDictionary({global:{},attrs:{},pages:[],regex:[]});
       });
   }
 
