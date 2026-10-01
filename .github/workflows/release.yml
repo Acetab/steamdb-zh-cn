@@ -27,13 +27,23 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Check
+        run: npm run check
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
+          NOTES="docs/releases/${TAG}.md"
+          if [ -f "$NOTES" ]; then
+            NOTES_ARGS=(--notes-file "$NOTES")
+          else
+            NOTES_ARGS=(--generate-notes)
+          fi
           gh release create "$TAG" \
             build/steamdb-zh-cn-*.zip \
             build/steamdb-zh-cn-*.crx \
             build/steamdb-zh-cn-*.user.js \
-            --generate-notes
+            --title "SteamDB 中文汉化 $TAG" \
+            "${NOTES_ARGS[@]}"

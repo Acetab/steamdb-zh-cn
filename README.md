@@ -7,18 +7,15 @@
 
 **1.0.8**（2026-10-01）：通用文字翻译仅在按钮、标签、表头、导航等界面控件中生效；普通段落、数据单元格及主标题需要明确上下文规则，宁可漏翻也不套用通用词条。增加游戏/软件链接、用户内容和编辑区保护。仍坚持范围与原文双重命中，只改文字节点或指定属性，保留内部结构；未实现通用 Shadow DOM 支持。较旧版可能少翻部分未标记的控件，可通过 contexts 精确补充。
 
-本地优化版 **1.0.7**（2026-10-01）：新增 `dictionary/contexts.json` 控件上下文规则，按“控件规则 → 页面词典 → 通用词典”匹配，仍需原文命中才替换。规则可指定 `path`、`selector`、`terms` 和可选 `attribute`（title/aria-label/placeholder），数组顺序决定上下文优先级。发行文件打包默认上下文规则，远程旧词典没有 contexts 字段时使用该默认值。
+当前版本为 **1.0.8**。完整变更见[更新说明](docs/releases/v1.0.8.md)，安装包见[最新 Release](https://github.com/Acetab/steamdb-zh-cn/releases/latest)。
 
-单节点文字及属性保留原文匹配记录；历史导航与 pageshow 重扫，动态扫描检测路径变化并刷新词典。内联拼接文本仍采用现有机制，未实现通用 Shadow DOM 翻译。新增上下文结构审计及回归测试，构建与隔离 Edge 页面测试通过；尚未远程发布或 Steam 客户端实测。
-
-设计参考：[maboloshi/github-chinese](https://github.com/maboloshi/github-chinese) 的页面规则、动态更新和历史导航处理，以及 [MaydayV/github-chinese](https://github.com/MaydayV/github-chinese) 对编辑区域与搜索控件的保护。此轮未引入其源码或词库，新增逻辑独立实现。
-
-本地优化版 **1.0.6**（2026-10-01）：修复动态扫描遗漏根控件自身 `title`、`aria-label`、`placeholder` 的问题，保留页面词典优先、未命中不替换和排除区保护。新增属性与上下文匹配回归检查；构建、启动检查及隔离 Edge 页面验证通过。尚未发布到远程，也未在 Steam 客户端实测。
-
+- 控件上下文规则优先于页面词典和通用词典；范围及原文均匹配才替换。
+- 单文字节点及属性保留原文记录，历史导航和页面恢复后重新匹配。
+- 设计参考 [maboloshi/github-chinese](https://github.com/maboloshi/github-chinese) 和 [MaydayV/github-chinese](https://github.com/MaydayV/github-chinese)，新增逻辑独立实现。
 - 扩展版纯本地运行（词库打包在扩展内，不联网）；油猴版启动时自动拉取最新词库（主 GitHub raw → 备 jsDelivr），不上传任何数据
 - 动态内容监听：搜索建议、切换标签、异步加载的内容自动翻译
 - 页面内浮动按钮「译」：暂停/启用汉化、采集未翻译文本
-- 词库 2,300+ 条（global 1,570 / pages 684 / attrs 43 / regex 66），覆盖 SteamDB 主要固定界面文本
+- 词库 2,300+ 条（global 1,570 / pages 695 / attrs 43 / regex 66），覆盖 SteamDB 主要固定界面文本
 - 只改写界面文本：自动跳过代码块、可编辑区、超长文本，不翻译游戏名和商店介绍
 
 ## 术语口径
@@ -47,6 +44,10 @@
 
 **扩展版**（Chrome / Edge / Steam 客户端内置浏览器）：
 
+- [下载 1.0.8 ZIP](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.8/steamdb-zh-cn-1.0.8.zip)，解压后加载目录；[CRX 备选包](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.8/steamdb-zh-cn-1.0.8.crx)可能受浏览器安装限制。
+- 油猴版与扩展版不要同时启用。此次引擎整改需要更新脚本或扩展，单独更新词库不足以生效。
+- 本次已完成隔离 Edge 验证，Steam 内置浏览器尚未实测。
+
 - 本地构建产物：`npm run build` 后取 `build/` 目录（「加载已解压的扩展程序」）或 `build/steamdb-zh-cn-<版本>.zip` / `.crx`
 - 打开 `chrome://extensions` → 开启开发者模式 → 「加载已解压的扩展程序」选择 `build/` 目录，或直接拖入 `.crx`
 
@@ -72,6 +73,7 @@ npm run build
 dictionary/
 ├── global.json     # 全局通用词条
 ├── attrs.json      # placeholder/aria-label/title 属性词条
+├── contexts.json   # 控件上下文规则（path/selector/terms，可选 attribute）
 ├── regex.json      # 带数字/日期的锚定文本
 └── pages/          # 按路径前缀分组，如 app.json、charts.json
 ```
@@ -81,6 +83,8 @@ dictionary/
 油猴版词库加载机制：启动时先用本地缓存（GM 存储，首次安装为 `@resource` 快照）立即翻译，同时按**源列表依次拉取**最新词库——主源 GitHub raw（push 即最新、无缓存延迟），失败自动切备用源 jsDelivr（国内快，接受短暂缓存滞后），全部失败回退本地缓存。成功后应用并自动重译当前页——**改词库后无需重装脚本，刷新页面即生效**。
 
 ## 自动发布（可选）
+
+发布前运行 `npm run build` 和 `npm run check`，在 `docs/releases/v<版本>.md` 编写更新说明，并同步 package.json 与 manifest.json。工作流会再次构建和检查，使用对应说明创建 Release。
 
 推送 `v*` 标签触发 GitHub Actions 构建并发布 Release（zip / crx / user.js 三件套），仅在有分发需求时使用：
 
