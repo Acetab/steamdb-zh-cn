@@ -28,7 +28,9 @@
     '[contenteditable=""]', '[contenteditable="plaintext-only"]',
     'a[href^="/app/"]', 'a[href^="/sub/"]', 'a[href^="/depot/"]', 'a[href^="/bundle/"]',
     'a[href*="steamdb.info/app/"]', 'a[href*="steamcommunity.com/profiles/"]',
+    'a[href*="steamcommunity.com/id/"]',
     '.app-name', '.username', '.user-content', '[data-user-content]',
+    '[data-sdbcn-ui]',
   ].join(",");
   // 通用词条仅应用于界面控件；普通段落、数据单元格和主标题需明确上下文规则。
   const UI_TEXT_SCOPE = 'button,label,legend,summary,option,th,dt,h2,h3,h4,nav,footer,'+
@@ -83,7 +85,8 @@
   function isOlderDictionary(candidate,current){
     const parse=v=>/^\d+\.\d+\.\d+$/.test(v||'')?v.split('.').map(Number):null;
     const a=parse(candidate?.meta?.version),b=parse(current?.meta?.version);
-    if(!a || !b)return false;
+    if(!a)return Boolean(b);
+    if(!b)return false;
     for(let i=0;i<3;i++)if(a[i]!==b[i])return a[i]<b[i];
     const date=v=>/^\d{4}-\d{2}-\d{2}$/.test(v||'')?v:null;
     const ad=date(candidate.meta.updatedAt),bd=date(current.meta.updatedAt);
@@ -210,6 +213,7 @@
   }
 
   function loadDictionary() {
+    if(typeof INSTALL_DICTIONARY !== 'undefined')applyDictionary(INSTALL_DICTIONARY);
     // 1) 内嵌词库：扩展版构建时注入
     const embedded = typeof EMBEDDED_DICTIONARY !== "undefined" ? EMBEDDED_DICTIONARY : null;
     if (embedded) {
@@ -219,7 +223,7 @@
     // 2) 油猴：本地词库立即生效（GM 缓存 → @resource），随后异步拉取最新
     if (typeof GM_xmlhttpRequest === "function") {
       const cached = loadCachedDict();
-      if (cached) {
+      if (cached && (!activeDictionary || !isOlderDictionary(cached,activeDictionary))) {
         applyDictionary(cached);
       }
       if (typeof GM_getResourceText === "function") {
@@ -504,6 +508,9 @@
     if (hasCjk(bare) || BRAND_TERMS.has(bare)) return false;
     if (/^(?:https?:|[\d\W_]+$)/i.test(bare)) return false;
     if (/^[a-f\d]{16,}$/i.test(bare)) return false;
+    if (/^\[U:\d+:\d+\]$|^STEAM_\d+:\d+:\d+$|^steam:[a-f\d]+$|^[A-Z0-9]{5}-[A-Z0-9]{4}$/i.test(bare))return false;
+    if (/\bUTC\b|\bGMT[+-]|^\d+\s+(?:seconds?|minutes?|hours?|days?|weeks?|months?|years?) ago$/i.test(bare))return false;
+    if (/^(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (?:\d{4}|'\d{2})$/i.test(bare))return false;
     return true;
   }
 
@@ -515,22 +522,27 @@
     }, 250);
   }
 
-  function collectOnPage() {
+  function collectOnPage(fresh = false) {
     if (!collected) collected = readCollected();
     const path = location.pathname;
-    if (!collected[path]) collected[path] = {};
+    if (fresh || !collected[path]) collected[path] = {};
     const bag = collected[path];
-    for (const el of document.querySelectorAll(COLLECT_SCOPE)) {
-      const values = [
-        el.innerText,
-        el.getAttribute("aria-label"),
-        el.getAttribute("placeholder"),
-        el.getAttribute("title"),
-      ];
-      for (const value of values) {
+    const add=(el,type,value)=>{
         const text = normalize(value || "");
-        if (text && isCollectable(text)) bag[text] = "";
-      }
+        if(!text || !isCollectable(text) || isSkipped(el))return;
+        if(!bag[text] || typeof bag[text]!=='object')bag[text]={sources:[]};
+        const source={type,tag:el.localName,classes:[...el.classList].filter(c=>/^[a-z][a-z_-]+$/i.test(c)).slice(0,2)};
+        if(bag[text].sources.length<5 && !bag[text].sources.some(s=>JSON.stringify(s)===JSON.stringify(source)))bag[text].sources.push(source);
+    };
+    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    let node;
+    while(node=walker.nextNode()){
+      const el=node.parentElement;
+      if(el && el.closest(UI_TEXT_SCOPE))add(el,'text',node.nodeValue);
+    }
+    for(const el of document.querySelectorAll('input[placeholder],[aria-label],[title]')){
+      if(isSkipped(el)||!el.closest(UI_TEXT_SCOPE+',input,select,[role="tooltip"]'))continue;
+      for(const name of ['aria-label','placeholder','title'])add(el,name,el.getAttribute(name));
     }
     scheduleSave();
     return Object.keys(bag).length;
@@ -552,14 +564,34 @@
     const pages = scope === "all"
       ? collected
       : { [location.pathname]: collected[location.pathname] || {} };
-    const count = Object.values(pages)
-      .reduce((sum, bag) => sum + Object.keys(bag).length, 0);
-    copyToClipboard(JSON.stringify({
-      version: VERSION,
-      exportedAt: new Date().toISOString(),
-      pages,
-    }, null, 2));
-    toast(`已复制 ${count} 条未翻译候选`);
+    showCollectionReview(pages);
+  }
+  function showCollectionReview(pages){
+    document.querySelector('[data-sdbcn-review]')?.remove();
+    const panel=document.createElement('section');panel.setAttribute('data-sdbcn-ui','');panel.setAttribute('data-sdbcn-review','');panel.setAttribute('role','dialog');panel.setAttribute('aria-label','检查漏翻反馈');
+    panel.style.cssText='position:fixed;inset:8vh 8vw;z-index:2147483647;background:#fff;color:#222;border:1px solid #aaa;border-radius:8px;padding:20px;overflow:auto;font:14px/1.5 system-ui';
+    panel.innerHTML='<h2>检查漏翻反馈</h2><p>取消游戏名、日期或私人内容。下载 JSON 后发回当前聊天，我可以据此核对语境并补词；也可手动附到仓库 Issue。候选不会自动上传或加入词库。</p><label>复现步骤或补充说明<textarea rows="2" style="display:block;width:100%"></textarea></label><div data-list></div><div data-actions style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px"></div>';
+    const list=panel.querySelector('[data-list]'),items=[];
+    for(const [path,bag] of Object.entries(pages))for(const [text,details] of Object.entries(bag)){
+      const row=document.createElement('label');row.style.cssText='display:block;padding:5px;border-bottom:1px solid #ddd';
+      const check=document.createElement('input');check.type='checkbox';check.checked=true;
+      const span=document.createElement('span');span.textContent=` ${text} — ${path}`;
+      row.append(check,span);list.append(row);items.push({path,text,details,check});
+    }
+    const report=()=>({schemaVersion:1,version:VERSION,exportedAt:new Date().toISOString(),notes:panel.querySelector('textarea').value,
+      entries:items.filter(i=>i.check.checked).map(({path,text,details})=>({page:location.origin+path,text,sources:details?.sources||[]}))});
+    const download=(kind)=>{
+      const data=report();if(!data.entries.length){toast('请至少选择一个候选词条');return;}
+      const content=kind==='json'?JSON.stringify(data,null,2):'# SteamDB 界面漏翻反馈\n\n脚本版本：'+VERSION+'\n\n复现说明：'+data.notes+'\n\n'+data.entries.map(e=>'- '+e.page+'\n  - '+e.text.replace(/[\r\n]/g,' ')).join('\n')+'\n';
+      const url=URL.createObjectURL(new Blob([content],{type:kind==='json'?'application/json':'text/markdown'}));
+      const a=document.createElement('a');a.href=url;a.download='SteamDB-feedback-'+new Date().toISOString().replace(/[:.]/g,'-')+'.'+(kind==='json'?'json':'md');a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);
+    };
+    const actions=panel.querySelector('[data-actions]');
+    for(const [label,run] of [['全选',()=>items.forEach(i=>i.check.checked=true)],['全不选',()=>items.forEach(i=>i.check.checked=false)],['下载 JSON',()=>download('json')],['下载 Markdown',()=>download('md')],['复制所选结果',()=>{copyToClipboard(JSON.stringify(report(),null,2));toast('复制结果后可粘贴回当前聊天')}],['关闭',()=>panel.remove()]]){
+      const button=document.createElement('button');button.type='button';button.textContent=label;button.onclick=run;actions.append(button);
+    }
+    const link=document.createElement('a');link.href='https://github.com/Acetab/steamdb-zh-cn/issues/new';link.target='_blank';link.rel='noopener noreferrer';link.textContent='打开仓库反馈页（手动附文件）';actions.append(link);
+    document.body.append(panel);
   }
 
   function clearCollected() {
@@ -608,11 +640,13 @@
 
   function mountMenu(items) {
     const fab = document.createElement("button");
+    fab.setAttribute('data-sdbcn-ui','');
     fab.type = "button";
     fab.title = "SteamDB 简体中文";
     fab.textContent = "译";
     fab.style.cssText = "position:fixed;right:16px;bottom:16px;z-index:2147483646;width:44px;height:44px;border-radius:50%;border:0;background:#66c0f4;color:#1b2838;font:700 18px/1 sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4)";
     const panel = document.createElement("div");
+    panel.setAttribute('data-sdbcn-ui','');
     panel.style.cssText = "position:fixed;right:16px;bottom:70px;z-index:2147483647;display:none;min-width:200px;background:#fff;border:1px solid #c7d5e0;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.25);overflow:hidden;font:13px/1.5 sans-serif";
     for (const item of items) {
       const btn = document.createElement("button");
@@ -649,15 +683,10 @@
       },
     },
     {
-      label: "采集当前页未翻译文本",
+      label: "采集并检查当前页漏翻",
       run() {
-        const count = collectOnPage();
-        copyToClipboard(JSON.stringify({
-          page: location.href,
-          collectedAt: new Date().toISOString(),
-          texts: Object.keys(collected[location.pathname] || {}).sort((a, b) => a.localeCompare(b, "en")),
-        }, null, 2));
-        toast(`已复制当前页 ${count} 条未翻译候选`);
+        collectOnPage(true);
+        exportCollected('current');
       },
     },
     {
@@ -669,11 +698,11 @@
     },
     ...(collecting ? [
       {
-        label: "复制当前路径采集结果",
+        label: "检查当前路径采集结果",
         run: () => exportCollected("current"),
       },
       {
-        label: "复制全部采集结果",
+        label: "检查全部采集结果",
         run: () => exportCollected("all"),
       },
       { label: "清除当前路径采集结果", run: clearCollected },

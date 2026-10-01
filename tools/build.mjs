@@ -216,6 +216,7 @@ const remoteDictInject = `const REMOTE_DICT_URLS = ${JSON.stringify([dictResourc
 const userscript = [
   userscriptHeader,
   remoteDictInject,
+  `const INSTALL_DICTIONARY = ${JSON.stringify(rawDict)};`,
   "",
   contentJs,
 ].join("\n");

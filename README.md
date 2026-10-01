@@ -5,9 +5,9 @@
 
 ## 特性
 
-**1.0.11**（2026-10-01）：将词库来源选择移到油猴脚本菜单，页面“译”菜单保留汉化及漏翻采集功能。沿用词库校验、防降级和上下文匹配。新增控件规则尚未在真实 SteamDB 页面全面验证，公开抓取返回 403；未实现通用 Shadow DOM 支持。
+**1.0.12**（2026-10-01）：根据优惠、排行榜和计算器页面的采集结果补充 52 条页面及属性规则。漏翻采集增加勾选检查、备注、JSON/Markdown 下载和反馈入口，减少游戏名、日期及账号标识误采。新增词条尚未在真实页面全面验证，公开访问返回 403；未实现通用 Shadow DOM 支持。
 
-当前版本为 **1.0.11**。完整变更见[更新说明](docs/releases/v1.0.11.md)，安装包见[最新 Release](https://github.com/Acetab/steamdb-zh-cn/releases/latest)。
+当前版本为 **1.0.12**。完整变更见[更新说明](docs/releases/v1.0.12.md)，安装包见[最新 Release](https://github.com/Acetab/steamdb-zh-cn/releases/latest)。
 
 - 控件上下文规则优先于页面词典和通用词典；范围及原文均匹配才替换。
 - 单文字节点及属性保留原文记录，历史导航和页面恢复后重新匹配。
@@ -15,7 +15,7 @@
 - 扩展版使用打包词库；油猴版可选择自动切换、仅 GitHub、仅 jsDelivr 或仅本地词库，不上传页面内容
 - 动态内容监听：搜索建议、切换标签、异步加载的内容自动翻译
 - 页面内浮动按钮「译」：暂停/启用汉化、采集未翻译文本
-- 词库 2,300+ 条（global 1,570 / pages 695 / attrs 43 / regex 66），覆盖 SteamDB 主要固定界面文本
+- 词库 2,400+ 条（global 1,570 / pages 726 / attrs 64 / regex 66），覆盖 SteamDB 主要固定界面文本
 - 只改写界面文本：自动跳过代码块、可编辑区、超长文本，不翻译游戏名和商店介绍
 
 ## 术语口径
@@ -53,7 +53,7 @@
 
 **扩展版**（Chrome / Edge / Steam 客户端内置浏览器）：
 
-- [下载 1.0.11 ZIP](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.11/steamdb-zh-cn-1.0.11.zip)，解压后加载目录；[CRX 备选包](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.11/steamdb-zh-cn-1.0.11.crx)可能受浏览器安装限制。
+- [下载 1.0.12 ZIP](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.12/steamdb-zh-cn-1.0.12.zip)，解压后加载目录；[CRX 备选包](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.12/steamdb-zh-cn-1.0.12.crx)可能受浏览器安装限制。
 - 油猴版与扩展版不要同时启用。此次引擎整改需要更新脚本或扩展，单独更新词库不足以生效。
 - 本次已完成隔离 Edge 验证，Steam 内置浏览器尚未实测。
 
@@ -89,7 +89,13 @@ dictionary/
 
 补词流程：采集未翻译文本（「译」菜单）或保存页面 HTML 到 `html-dump/` 后用 `node tools/extract-untracked.mjs` 扫描 → 筛选后加入对应文件 → `npm run build` → 提交（`translations.zh-CN.json` 为发布文件，需一并提交，供油猴加载）。
 
-油猴版先用本地缓存（GM 存储，首次安装为 `@resource` 快照）翻译，再按用户选定的来源更新。在线更新成功后应用词库并重译当前页；仅本地模式不会主动更新。来源选择的具体行为见安装章节。
+油猴版包含当前版本安装词库，较旧缓存不能覆盖它，再按用户选定的来源更新。在线更新成功后应用词库并重译当前页；仅本地模式不会主动更新。来源选择的具体行为见安装章节。
+
+### 采集后如何反馈
+
+打开“译”菜单，选择“采集并检查当前页漏翻”。在检查窗口取消游戏名、个人内容及无需翻译的项目，可填写位置或操作步骤，再下载 JSON 或 Markdown。将文件交给维护者，或点击反馈入口手动提交 GitHub Issue。采集结果不会自动上传，也不会自动加入词库。
+
+当前页重新采集会清除该路径的旧采集结果。采集只读取界面文字及提示属性，不读取输入框的值；导出网址不包含查询参数。仍请在提交前检查，避免个人信息随界面文字进入反馈文件。
 
 ### 词库直链
 

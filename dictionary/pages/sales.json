@@ -1,6 +1,16 @@
 {
   "path": "/sales/",
   "terms": {
+    "Hide in family": "隐藏家庭库游戏",
+    "Hide owned": "隐藏已拥有的游戏",
+    "Show only in family": "仅显示家庭库游戏",
+    "Show only owned": "仅显示已拥有的游戏",
+    "In Wishlist": "已加入愿望单",
+    "Discount percentage": "折扣百分比",
+    "Price to": "最高价格",
+    "Search powered by Algolia": "搜索由 Algolia 提供支持",
+    "Remove '≥ 50% discount' filter": "移除“折扣 ≥ 50%”筛选条件",
+    "Remove '≥ 500 reviews' filter": "移除“评测数 ≥ 500”筛选条件",
     "Sales": "特卖",
     "Ends in": "结束于",
     "Limited Offer": "限时优惠",

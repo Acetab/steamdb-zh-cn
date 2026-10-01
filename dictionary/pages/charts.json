@@ -1,6 +1,9 @@
 {
   "path": "/charts/",
   "terms": {
+    "Steam Charts by SteamDB": "SteamDB 提供的 Steam 排行榜",
+    "Table is filtered to games with enough players, click here to view all. (sign in required)": "此表仅显示达到玩家人数门槛的游戏，点击查看全部（需要登录）。",
+    "click here to view all.": "点击此处查看全部。",
     "Most Played": "最多玩家",
     "Most Wishlisted": "最多愿望单",
     "Top": "排行",
