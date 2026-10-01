@@ -137,6 +137,12 @@
     else localStorage.setItem(STORAGE.sourceMode,mode);
     location.reload();
   }
+  function registerSourceSettings(){
+    if(!remoteDictUrls.length || typeof GM_registerMenuCommand!=='function')return;
+    for(const [mode,label] of Object.entries(sourceModes)){
+      GM_registerMenuCommand(`${readSourceMode()===mode?'✓ ':''}词库来源：${label}`,()=>setSourceMode(mode));
+    }
+  }
 
   // 油猴本地词库缓存（GM 存储，跨页面共享）
   function loadCachedDict() {
@@ -633,11 +639,8 @@
   const collecting = localStorage.getItem(STORAGE.collect) === "1";
   collected = collecting ? readCollected() : null;
 
+  registerSourceSettings();
   mountMenu([
-    ...(remoteDictUrls.length ? Object.entries(sourceModes).map(([mode,label])=>({
-      label:`${readSourceMode()===mode?'✓ ':''}词库来源：${label}`,
-      run:()=>setSourceMode(mode),
-    })) : []),
     {
       label: off ? "启用汉化" : "暂停汉化",
       run() {

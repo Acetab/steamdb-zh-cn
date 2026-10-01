@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          SteamDB 中文汉化
 // @namespace     steamdb-zh-cn.local
-// @version        1.0.10
+// @version        1.0.11
 // @description   SteamDB 网页简体中文汉化（非官方，MIT）
 // @author        steamdb-zh-cn contributors
 // @match         https://steamdb.info/*
@@ -13,6 +13,7 @@
 // @grant         GM_xmlhttpRequest
 // @grant         GM_getValue
 // @grant         GM_setValue
+// @grant         GM_registerMenuCommand
 // @license       MIT
 // ==/UserScript==
 
@@ -34,7 +35,7 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
 
   // ================= 配置 =================
 
-  const VERSION = "1.0.10";
+  const VERSION = "1.0.11";
   const STORAGE = {
     off: "sdbcn2_off",
     collect: "sdbcn2_collect_enabled",
@@ -157,6 +158,12 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
     if(typeof GM_setValue==='function')GM_setValue(STORAGE.sourceMode,mode);
     else localStorage.setItem(STORAGE.sourceMode,mode);
     location.reload();
+  }
+  function registerSourceSettings(){
+    if(!remoteDictUrls.length || typeof GM_registerMenuCommand!=='function')return;
+    for(const [mode,label] of Object.entries(sourceModes)){
+      GM_registerMenuCommand(`${readSourceMode()===mode?'✓ ':''}词库来源：${label}`,()=>setSourceMode(mode));
+    }
   }
 
   // 油猴本地词库缓存（GM 存储，跨页面共享）
@@ -654,11 +661,8 @@ const DEFAULT_CONTEXTS = [{"path":"/app/","selector":"th","terms":{"Languages":"
   const collecting = localStorage.getItem(STORAGE.collect) === "1";
   collected = collecting ? readCollected() : null;
 
+  registerSourceSettings();
   mountMenu([
-    ...(remoteDictUrls.length ? Object.entries(sourceModes).map(([mode,label])=>({
-      label:`${readSourceMode()===mode?'✓ ':''}词库来源：${label}`,
-      run:()=>setSourceMode(mode),
-    })) : []),
     {
       label: off ? "启用汉化" : "暂停汉化",
       run() {

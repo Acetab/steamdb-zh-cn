@@ -5,9 +5,9 @@
 
 ## 特性
 
-**1.0.10**（2026-10-01）：新增在线词库结构校验及版本/日期防降级，启动时比较缓存与安装快照；扩充详情字段、语言表、排行榜、特卖表头与筛选按钮规则。保留用户可选词库来源和原文精确匹配。新增规则尚未在真实 SteamDB 页面全面验证，公开抓取返回 403；未实现通用 Shadow DOM 支持。
+**1.0.11**（2026-10-01）：将词库来源选择移到油猴脚本菜单，页面“译”菜单保留汉化及漏翻采集功能。沿用词库校验、防降级和上下文匹配。新增控件规则尚未在真实 SteamDB 页面全面验证，公开抓取返回 403；未实现通用 Shadow DOM 支持。
 
-当前版本为 **1.0.10**。完整变更见[更新说明](docs/releases/v1.0.10.md)，安装包见[最新 Release](https://github.com/Acetab/steamdb-zh-cn/releases/latest)。
+当前版本为 **1.0.11**。完整变更见[更新说明](docs/releases/v1.0.11.md)，安装包见[最新 Release](https://github.com/Acetab/steamdb-zh-cn/releases/latest)。
 
 - 控件上下文规则优先于页面词典和通用词典；范围及原文均匹配才替换。
 - 单文字节点及属性保留原文记录，历史导航和页面恢复后重新匹配。
@@ -40,7 +40,7 @@
 
 - 直接安装：<https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/dist/steamdb-zh-cn.user.js>
 
-安装后打开 `steamdb.info`，右下角出现「译」按钮即生效。在该菜单选择“词库来源”，当前选项带 ✓；选择后自动刷新，设置跨页面保留。
+安装后打开 `steamdb.info`，右下角「译」按钮提供汉化开关和漏翻采集功能。词库来源设置位于浏览器工具栏的 Tampermonkey 图标菜单、本脚本的命令项中；当前选项带 ✓，选择后保存并自动刷新，设置跨页面保留。
 
 | 词库来源 | 在线更新行为 | 失败时 |
 | --- | --- | --- |
@@ -53,7 +53,7 @@
 
 **扩展版**（Chrome / Edge / Steam 客户端内置浏览器）：
 
-- [下载 1.0.10 ZIP](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.10/steamdb-zh-cn-1.0.10.zip)，解压后加载目录；[CRX 备选包](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.10/steamdb-zh-cn-1.0.10.crx)可能受浏览器安装限制。
+- [下载 1.0.11 ZIP](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.11/steamdb-zh-cn-1.0.11.zip)，解压后加载目录；[CRX 备选包](https://github.com/Acetab/steamdb-zh-cn/releases/download/v1.0.11/steamdb-zh-cn-1.0.11.crx)可能受浏览器安装限制。
 - 油猴版与扩展版不要同时启用。此次引擎整改需要更新脚本或扩展，单独更新词库不足以生效。
 - 本次已完成隔离 Edge 验证，Steam 内置浏览器尚未实测。
 
@@ -96,7 +96,7 @@ dictionary/
 - [GitHub Raw 词库](https://raw.githubusercontent.com/Acetab/steamdb-zh-cn/main/translations.zh-CN.json)
 - [jsDelivr CDN 词库](https://cdn.jsdelivr.net/gh/Acetab/steamdb-zh-cn@main/translations.zh-CN.json)
 
-两条链接对应同一份发布词库，jsDelivr 可能因缓存暂时滞后。在页面右下角“译”菜单中选择自动切换、仅 GitHub、仅 jsDelivr 或仅本地词库。
+两条链接对应同一份发布词库，jsDelivr 可能因缓存暂时滞后。在油猴的本脚本菜单中选择自动切换、仅 GitHub、仅 jsDelivr 或仅本地词库；页面“译”菜单不再包含来源设置。
 
 ## 自动发布（可选）
 
